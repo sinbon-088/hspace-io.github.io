@@ -1,0 +1,29 @@
+[params]
+title = "HSPACE Tech Blog"
+author = "HSPACE"
+# description = "A blog about tech, hacking, and security."
+favicon = "favicons/"
+profilePicture = "images/logo.png"
+
+[[params.socialIcons]]
+icon = "fas fa-envelope"
+title = "e-mail"
+url = "mailto:hack@hspace.io"
+
+[menu]
+  [[menu.main]]
+  name = "Home"
+  identifier = "home"
+  weight = 100
+  url = "/"
+
+  [[menu.main]]
+  name = "Posts"
+  weight = 200
+  identifier = "posts"
+  url = "/posts/"
+
+[module]
+  [[module.imports]]
+    path = "github.com/lxndrblz/anatole"
+    disable = false
