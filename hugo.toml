@@ -10,6 +10,13 @@ icon = "fas fa-envelope"
 title = "e-mail"
 url = "mailto:hack@hspace.io"
 
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.extensions]
+      [markup.goldmark.extensions.cjk]
+        enable = true
+        escapedSpace = true
+
 [menu]
   [[menu.main]]
   name = "Home"
