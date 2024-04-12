@@ -1,9 +1,9 @@
-+++
-author = "이인강(Arkea)"
-title = "리버싱 입문자를 위한 Ghidra 튜토리얼"
-tags = ["Tech"]
-date = 2024-04-09T02:17:33+09:00
-+++ 
+---
+author: 이인강(Arkea)
+title: 리버싱 입문자를 위한 Ghidra 튜토리얼
+date: 2024-04-09
+math: true
+---
 
 ### 목차
 1. Ghidra에 대하여
@@ -37,7 +37,7 @@ ___
 - GDB 사용법
 - 가상환경 사용 방법
 - 맥을 사용하는 경우 Homebrew 사용방법
-- 
+
 ---
 ## 설치 방법
 설치 방법은 크게 세 가지로 나누어서 진행하겠습니다. OS별로 윈도우즈, 맥, 리눅스의 순으로 설명하도록 하겠습니다. 
@@ -60,12 +60,13 @@ ___
 ![](/images/excute_on_mac/error1.png)
 ![](/images/excute_on_mac/error2.png)  
 이를 해결하기 위해서는 finder에서 열기를 누르고, 열린 폴더 안에 있는 실행파일을 좌클릭한 뒤, 열기를 눌러주면 됩니다. 그리고 다시 실행하면 오류는 해결됩니다.
-![](/images/excute_on_mac/finder_open1.png)
-![](/images/excute_on_mac/finder_open2.png)
 ![](/images/excute_on_mac/finder_decompile.png)
-![](/images/excute_on_mac/option.png)<!--사이즈 조절해서 파인더 이미지에 합치기-->
+![](/images/excute_on_mac/option.png)
+![](/images/excute_on_mac/finder_open1.png)
 ![](/images/excute_on_mac/finder_gnu.png)
-![](/images/excute_on_mac/option.png)<!--사이즈 조절해서 파인더 이미지에 합치기-->
+![](/images/excute_on_mac/option.png)
+![](/images/excute_on_mac/finder_open2.png)
+
 
 ### LINUX
 리눅스의 경우에는 우분투의 설치 방법과 칼리 리눅스의 설치 방법으로 나눠서 설명드리도록 하겠습니다.
@@ -217,7 +218,9 @@ main 함수에서 어떤 일이 일어나는지 살펴보면 `iVar1`에 `FUN_001
 ```
 
 이를 통해서 `FUN_00101149` 함수에 사용된 `Local_c`에 값을 저장할 때 사용한 수식이 아래와 같다는 것을 알 수 있습니다.
-$$(Local\_18 + Local\_14) \mod Local\_10$$
+$$
+(\textnormal{Local}\_18 + \textnormal{Local}\_14) \mod \textnormal{Local}\_10
+$$
 이처럼 어셈블리어를 분석하는 것을 통해서 디컴파일된 내용 중 나오지 않는 부분을 자세히 분석할 수 있게 됩니다. 
 
 다시 원래 목적으로 돌아가면 우리는 `main` 함수에서 비교하던 값인 `0x58`이라는 값을 `FUN_00101149` 함수에서 리턴 하도록 패치를 해야 합니다. 패치는 리스트 창에서 진행하게 됩니다. 이제 패치를 진행해 보겠습니다. 가장 간단한 방법으로는 `main`함수에 있는 비교하는 부분의 `0x58`을 `FUN_00101149` 함수의 리턴값인 `0xb`로 변경해 주면 됩니다. 이를 위해서 변경하려고 하는 어셈블리 코드로 커서를 옮기고 단축키로는 `Ctrl + shift + g` / `commamd + shift + g(mac)`를 누르면 되고, 좌클릭하고 `Patch Instruction`을 선택하면 패치를 진행할 수 있습니다.
@@ -493,7 +496,9 @@ local_18 = param_4 / param_3;
 local_14 = FUN_001011c9(local_24,local_20,local_1c,local_18,local_28);
 ```
 여기서 `FUN_001011c9` 에서 우리가 사용할 `param_1`과 `param_4`에 해당하는 변수는 `local_24`와 `loacl_18`이라는 것을 알 수 있습니다.  이를 통해 우리가 이용할 옵션을 확장해서 생각해 보면 아래의 수식과 같다고 볼 수 있을 것입니다.
-$$res = (param\_4 + param\_2) + (param\_4 / param\_3)$$
+$$
+\textnormal{res} = (\textnormal{param}\_4 + \textnormal{param}\_2) + (\textnormal{param}\_4 \div \textnormal{param}\_3)
+$$
 이제 어떤 숫자를 넣어야 할지 생각해 보면 `param_2`에 0, `param_3`에 1을, 그리고 `param_4`에 5가 들어가게 되면 원하는 값인 10이 나오리라는 것을 알 수 있습니다. 다시 `main` 함수로 넘어가서 scanf를 통해 들어온 값이 어떤 변수에 저장되었다 `FUN_001011c9`로 넘어가는지 확인하고 프로그램을 실행시켜 보겠습니다.
 
 우선 `FUN_00101307` 함수의 변수들과 `FUN_00101254` 함수의 매개변수들에 대해서 비교를 해보도록 하겠습니다. `FUN_00101307` 함수의 일부분을 가져와서 보면 아래와 같습니다.
