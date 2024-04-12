@@ -1,6 +1,10 @@
-# 리버싱 입문자를 위한 Ghidra 튜토리얼
-
-### 이인강(Arkea)
++++
+author = "이인강(Arkea)"
+title = "리버싱 입문자를 위한 Ghidra 튜토리얼"
+<!-- description = "2024년 HSPACE 1월 Web Writeup" -->
+tags = ["Tech"]
+date = 2024-04-09T02:17:33+09:00
++++ 
 
 ### 목차
 1. Ghidra에 대하여
