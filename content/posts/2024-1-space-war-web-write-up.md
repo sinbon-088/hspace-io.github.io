@@ -1,7 +1,6 @@
 +++
 author = "ipwn"
 title = "Space War 2024#1 (Web) write-up"
-description = "2024년 HSPACE 1월 Web Writeup"
 tags = ["SpaceWar"]
 date = 2024-04-05T02:17:33+09:00
 +++
