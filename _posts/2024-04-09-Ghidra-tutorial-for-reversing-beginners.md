@@ -3,13 +3,13 @@ title: 리버싱 입문자를 위한 Ghidra 튜토리얼
 description: >-
 	리버싱 입문자를 위한 Ghidra 튜토리얼입니다.
 author: Arkea
-date: 2024-04-09T02:17:33+09:00
+date: 2024-04-09 02:17:34 +0900
 tags: ["Reversing", "Ghidra", "Tutorial", "Tech"]
 categories: [Tech, Tutorial]
-toc: true
+# toc: true
 comments: false
 math: true
-mermaid: false
+# mermaid: false
 pin: false
 media_subpath: 
 # image: # 미리보기 이미지
