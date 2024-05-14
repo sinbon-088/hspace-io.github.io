@@ -4,7 +4,7 @@ description: >-
 	Space War 2024 4번째 Crypto write-up입니다.
 author: soon_haari
 date: 2024-05-03 02:17:33 +0900
-tags: [spacewar", crypto]
+tags: [spacewar, crypto]
 categories: [SpaceWar, Crypto]
 comments: false
 math: true
