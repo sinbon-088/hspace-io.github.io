@@ -224,9 +224,9 @@ main 함수에서 어떤 일이 일어나는지 살펴보면 `iVar1`에 `FUN_001
 ```
 
 이를 통해서 `FUN_00101149` 함수에 사용된 `Local_c`에 값을 저장할 때 사용한 수식이 아래와 같다는 것을 알 수 있습니다.
-$$
-(\textnormal{Local}\_18 + \textnormal{Local}\_14) \mod \textnormal{Local}\_10
-$$
+
+$$(\textnormal{Local}\_18 + \textnormal{Local}\_14) \mod \textnormal{Local}\_10$$
+
 이처럼 어셈블리어를 분석하는 것을 통해서 디컴파일된 내용 중 나오지 않는 부분을 자세히 분석할 수 있게 됩니다. 
 
 다시 원래 목적으로 돌아가면 우리는 `main` 함수에서 비교하던 값인 `0x58`이라는 값을 `FUN_00101149` 함수에서 리턴 하도록 패치를 해야 합니다. 패치는 리스트 창에서 진행하게 됩니다. 이제 패치를 진행해 보겠습니다. 가장 간단한 방법으로는 `main`함수에 있는 비교하는 부분의 `0x58`을 `FUN_00101149` 함수의 리턴값인 `0xb`로 변경해 주면 됩니다. 이를 위해서 변경하려고 하는 어셈블리 코드로 커서를 옮기고 단축키로는 `Ctrl + shift + g` / `commamd + shift + g(mac)`를 누르면 되고, 좌클릭하고 `Patch Instruction`을 선택하면 패치를 진행할 수 있습니다.
@@ -502,9 +502,9 @@ local_18 = param_4 / param_3;
 local_14 = FUN_001011c9(local_24,local_20,local_1c,local_18,local_28);
 ```
 여기서 `FUN_001011c9` 에서 우리가 사용할 `param_1`과 `param_4`에 해당하는 변수는 `local_24`와 `loacl_18`이라는 것을 알 수 있습니다.  이를 통해 우리가 이용할 옵션을 확장해서 생각해 보면 아래의 수식과 같다고 볼 수 있을 것입니다.
-$$
-\textnormal{res} = (\textnormal{param}\_4 + \textnormal{param}\_2) + (\textnormal{param}\_4 \div \textnormal{param}\_3)
-$$
+
+$$\textnormal{res} = (\textnormal{param}\_4 + \textnormal{param}\_2) + (\textnormal{param}\_4 \div \textnormal{param}\_3)$$
+
 이제 어떤 숫자를 넣어야 할지 생각해 보면 `param_2`에 0, `param_3`에 1을, 그리고 `param_4`에 5가 들어가게 되면 원하는 값인 10이 나오리라는 것을 알 수 있습니다. 다시 `main` 함수로 넘어가서 scanf를 통해 들어온 값이 어떤 변수에 저장되었다 `FUN_001011c9`로 넘어가는지 확인하고 프로그램을 실행시켜 보겠습니다.
 
 우선 `FUN_00101307` 함수의 변수들과 `FUN_00101254` 함수의 매개변수들에 대해서 비교를 해보도록 하겠습니다. `FUN_00101307` 함수의 일부분을 가져와서 보면 아래와 같습니다.
