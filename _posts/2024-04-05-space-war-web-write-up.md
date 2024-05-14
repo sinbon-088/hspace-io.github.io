@@ -1,10 +1,21 @@
 ---
-title: "Space War 2024#1 (Web) write-up"
-author: "ipwn"
-tags: ["SpaceWar", "Webhacking"]
-description:
-categories: []
+title: Space War 2024#1 (Web) write-up
+description: >-
+	Space War 2024#1 Web write-up입니다.
+author: ipwn
 date: 2024-04-05T02:17:33+09:00
+tags: ["spacewar", "webhacking"]
+categories: [SpaceWar, Webhacking]
+toc: true
+comments: false
+math: true
+mermaid: false
+pin: false
+media_subpath: 
+# image: # 미리보기 이미지
+#   path: /path/to/image
+#   alt: image alternative text
+#   lqip: /path/to/lqip-file # or base64 URI
 ---
 
 ### 목차

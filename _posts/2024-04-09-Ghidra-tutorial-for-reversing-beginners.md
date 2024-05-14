@@ -1,8 +1,21 @@
 ---
 title: 리버싱 입문자를 위한 Ghidra 튜토리얼
-author: 이인강(Arkea)
-date: 2024-04-09
-tags : ["Beginner", "Reversing"]
+description: >-
+	리버싱 입문자를 위한 Ghidra 튜토리얼입니다.
+author: Arkea
+date: 2024-04-09T02:17:33+09:00
+tags: ["Reversing", "Ghidra", "Tutorial", "Tech"]
+categories: [Tech, Tutorial]
+toc: true
+comments: false
+math: true
+mermaid: false
+pin: false
+media_subpath: 
+# image: # 미리보기 이미지
+#   path: /path/to/image
+#   alt: image alternative text
+#   lqip: /path/to/lqip-file # or base64 URI
 ---
 
 ### 목차
