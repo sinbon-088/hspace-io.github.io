@@ -1,5 +1,5 @@
 ---
-title: Space War 2024-4 (Crypto) write-up
+title: Space War 2024#4 (Crypto) write-up
 # description: Space War 2024 4번째 Crypto write-up입니다.
 author: soon_haari
 date: 2024-05-03 02:17:33 +0900
