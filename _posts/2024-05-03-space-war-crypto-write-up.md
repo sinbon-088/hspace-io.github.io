@@ -1,9 +1,19 @@
 ---
 title: "Space War 2024#4 (Crypto) write-up"
-author: "김민순(soon_haari)"
-tags: ["SpaceWar", "Crypto"]
-description:
-categories: []
+author: soon_haari
+tags: ["spaceWar", "crypto"]
+description: "Space War 2024#4 Crypto write-up입니다."
+categories: ["Space War", "Crypto"]
+toc: true
+comments: false
+math: true
+mermaid: false
+pin: false
+media_subpath: 
+# image: # 미리보기 이미지
+#   path: /path/to/image
+#   alt: image alternative text
+#   lqip: /path/to/lqip-file # or base64 URI
 date: 2024-05-03T02:17:33+09:00
 ---
 
