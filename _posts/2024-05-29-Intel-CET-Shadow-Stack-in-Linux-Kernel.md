@@ -27,7 +27,7 @@ pin: false
 
 ## Intel CET Shadow Stack in Linux Kernel
 
-안녕하세요! knights of the space의 멤버로 활동하고 있는 김영민(OSORI)입니다.  
+안녕하세요! Knights of the SPACE의 멤버로 활동하고 있는 김영민(OSORI)입니다.  
 
 저는 처음 보안에 입문할 때 시스템으로 시작해서 아직까지도 시스템 해킹을 주로 공부해오고 있습니다. 하지만 이제 저는 일자리를 잃을 수도 있을 것 같습니다.. 바로 Intel 의 Control-Flow Enforcement Technology(CET) 때문입니다. 이 기술하나로 ROP, JOP가 막혀버린다는데, 이번에 Ubuntu 24.04의 리눅스 커널에 도입되었다고 합니다. 본 포스팅에서는 CET 의 쉐도우 스택에 대해서 자세히 알아보도록 하겠습니다. 
 

