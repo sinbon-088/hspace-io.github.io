@@ -45,7 +45,7 @@ pin: false
 
 RET을 덮는 공격은 이미 너무나도 유명하기 때문에 대부분의 컴파일러에서는 스택 프로텍터(canary, stack cookie) 보호기법을 사용합니다. RET 앞에 랜덤한 값을 배치해 해당 값이 변조되면 프로그램을 종료시키는 것입니다. 완벽하지는 않지만 대부분의 상황에서 잘 동작하는 방법입니다. 하지만 그럼에도 불구하고 RET 자체가 변조될 때 프로그램의 흐름은 공격자에게 제어될 수 있습니다. 
 
-![Untitled](Intel_CET_Shadow_Stack_in_Linux_Kernel/1.png)
+![Untitled](/assets/img/Intel_CET_Shadow_Stack_in_Linux_Kernel/1.png)
 
 윈도우에서는 CFG (Control Flow Guard) 라는 보호기법을 사용하기도 합니다. 주로 커널에 적용되어있는데 간접 호출(Indirect Branch) 방식으로 함수 포인터를 호출할 때 해당 함수 포인터의 변조 여부를 확인하여 공격자에게 프로그램의 흐름이 넘어가는 것을 방어합니다. 이 외에도 LLVM CFI 등 소프트웨어적으로 ROP를 막기위한 몇가지 대책들이 존재해왔습니다. 그러나 이 보호기법들은 이미 다양한 우회기법들이 알려져 있기도 합니다. 
 
@@ -74,7 +74,7 @@ IBT 는 간접 호출 (런타임에 호출 주소가 정해지는 방식 ex: cal
 
 아래처럼 lscpu 명령어를 통해서 플래그를 확인 했을 때 쉐도우 스택이 사용가능한 것을 볼 수 있습니다. 
 
-![Untitled](Intel_CET_Shadow_Stack_in_Linux_Kernel/2.png)
+![Untitled](/assets/img/Intel_CET_Shadow_Stack_in_Linux_Kernel/2.png)
 
 CET의 경우 ELF 파일에 특정한 문구가 마킹되있어야지 유저영역 어플리케이션에 활성화 됩니다. 아래와 같은 명령어로 확인결과 IBT, SHSTK 둘다 사용이 가능한 것을 볼 수 있습니다. 이는 컴파일러, 링커의 옵션을 통해서 마킹이 가능합니다. 
 
@@ -151,7 +151,7 @@ Segmentation fault (core dumped)
 
 디버깅을 하면 아래처럼 나옵니다.
 
-![Untitled](Intel_CET_Shadow_Stack_in_Linux_Kernel/3.png)
+![Untitled](/assets/img/Intel_CET_Shadow_Stack_in_Linux_Kernel/3.png)
 
 쉐도우 스택의 활성화 여부를 보면 잘 활성화 되있는 것을 볼 수 있습니다.
 
@@ -189,7 +189,7 @@ int main(){
 
 `vuln` 함수에만 쉐도우 스택을 적용하였습니다. GDB를 이용해서 return address 를 system 으로 변조해보았는데 SIGSEGV 가 발생한 것을 볼 수 있습니다. 
 
-![Untitled](Intel_CET_Shadow_Stack_in_Linux_Kernel/4.png)
+![Untitled](/assets/img/Intel_CET_Shadow_Stack_in_Linux_Kernel/4.png)
 
 이제 한번 쉐도우 스택을 읽고 써보겠습니다. `_get_ssp` 함수는 `rdsspq` 명령어의 intrinsic 입니다. 
 
@@ -224,7 +224,7 @@ ssp ref : 0
 Segmentation fault (core dumped)
 ```
 
-![Untitled](Intel_CET_Shadow_Stack_in_Linux_Kernel/5.png)
+![Untitled](/assets/img/Intel_CET_Shadow_Stack_in_Linux_Kernel/5.png)
 
 재밌게도 쉐도우 스택으로 매핑된 메모리 맵은 rw 로 보입니다. 쉐도우 스택 영역 주소는 일반적인 명령어로 값을 쓰는 것이 불가능하기 때문에 이런일이 발생했습니다. 쉐도우 스택 메모리에 값을 쓰기 위해서는 `wrss` 명령어를 이용해야 합니다. 
 
@@ -236,17 +236,17 @@ Segmentation fault (core dumped)
 
 쉐도우 스택의 실체는 어디에 존재할까요? 쉐도우 스택이 실질적으로 저장되는 레지스터는 Model Specific Register 줄여서 MSR 이라고 부르는 곳입니다. 아래 그림처럼 특권 레벨 0(커널)~ 3(유저)에 따른 단계별로 쉐도우 스택 레지스터가 존재합니다. 
 
-![Untitled](Intel_CET_Shadow_Stack_in_Linux_Kernel/6.png)
+![Untitled](/assets/img/Intel_CET_Shadow_Stack_in_Linux_Kernel/6.png)
 
 이 MSR 을 바꾸기 위해서는 `wrmsr` 이라는 명령어를 사용해야 하지만, 해당 명령어는 커널 레벨의 권한을 요구하는 명령어이기 때문에 유저가 직접적으로 쉐도우 스택을 설정하는 것은 불가능합니다.  그리고 쉐도우 스택은 PL0 ~ PL2 사이에 발생하는 CALL/RET 에는 쉐도우 스택을 검증하는 루틴이 있지만, PL012 ↔ PL3 간에 발생하는 CALL/RET(예 : syscall) 에는 검증을 하지 않습니다. 유저 ↔ 커널 간에 데이터가 공유되는 것은 보안에 치명적이기 때문입니다. 커널이 유저의 쉐도우 스택에 접근 하는 것도 허용되지 않고(SMAP 보호기법), 유저가 커널의 쉐도우 스택에 접근하는 것도 허용되지 않습니다. 
 
 이제 쉐도우 스택의 메모리 구조를 보도록 하겠습니다. 쉐도우 스택 메모리가 어떻게 구현되는지 알기 위해서는 x86 아키텍쳐의 페이징에 대해서 알아야 합니다. 리눅스는 4kb 단위의 페이징을 사용하며 그 구조는 아래와 같습니다. 
 
-![Untitled](Intel_CET_Shadow_Stack_in_Linux_Kernel/7.png)
+![Untitled](/assets/img/Intel_CET_Shadow_Stack_in_Linux_Kernel/7.png)
 
 아래는 Page Table Entry(PTE) 구조체 테이블입니다. 
 
-![Untitled](Intel_CET_Shadow_Stack_in_Linux_Kernel/8.png)
+![Untitled](/assets/img/Intel_CET_Shadow_Stack_in_Linux_Kernel/8.png)
 
 재밌는 점은 쉐도우 스택 메모리임을 따로 나타내는 비트는 없습니다. 메모리 권한과 관련된 비트는 R/W, U/S 만 존재합니다. 이미 정해진 구조체를 변화시킬 경우, 많은 문제가 생길 수 있기 때문에 인텔의 엔지니어들은 재미있는 생각을 하게됩니다. 바로 Dirty flag를 이용하는 것입니다. Dirty flag 는 해당 페이지에 값을 적을 경우 자동으로 비트가 세팅되는 비트입니다. R/W 를 0, Dirty 를 1로 세팅하면 쓰기 권한이 없는데 값이 써졌다는 모순이 발생하게 되고, 이런일은 일반적인 시나리오에서는 존재하지 않습니다. CPU는 이를 이용해서 페이지가 쉐도우 스택 페이지인지 확인합니다. 
 
@@ -367,7 +367,7 @@ static inline pgprotval_t clear_saveddirty_shift(pgprotval_t v)
 
 아래 그림에서 왼쪽은 가드페이지가 없을때의 모습입니다. 인접한 쉐도우 스택끼리에서 SSP가 이동하게 된다면 보안 문제가 생길 수 있습니다. 그러나 가드페이지를 추가함으로서 페이지의 접근시에 페이지 폴트가 발생하고 프로그램은 종료될 것 입니다. 
 
-![Untitled](Intel_CET_Shadow_Stack_in_Linux_Kernel/9.png)
+![Untitled](/assets/img/Intel_CET_Shadow_Stack_in_Linux_Kernel/9.png)
 
 ### 이외에도 몇가지 주목할만한 점들
 
