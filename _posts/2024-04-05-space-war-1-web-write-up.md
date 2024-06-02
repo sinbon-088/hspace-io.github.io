@@ -1,9 +1,7 @@
 ---
 title: Space War 2024#1 (Web) write-up
 description: Space War 2024#1 Web write-up입니다.
-author:
-    name: ipwn
-    link: 
+author: ipwn
 date: 2024-04-05 02:17:35 +0900
 tags: [spacewar, webhacking]
 categories: [SpaceWar, Webhacking]

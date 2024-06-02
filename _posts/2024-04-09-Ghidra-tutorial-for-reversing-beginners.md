@@ -1,9 +1,7 @@
 ---
 title: 리버싱 입문자를 위한 Ghidra 튜토리얼
 description: 리버싱 입문자를 위한 Ghidra 튜토리얼입니다.
-author:
-    name: Arkea
-    link: 
+author: Arkea
 date: 2024-04-09 02:17:34 +0900
 tags: [reversing, ghidra, tutorial, tech]
 categories: [Tech, Tutorial]
