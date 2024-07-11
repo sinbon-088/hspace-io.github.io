@@ -46,7 +46,7 @@ pin: false
 
 결과를 확인해보면, `getFlag`라는 함수가 추가된 것을 볼 수 있습니다. (이외의 함수들은 큰 의미가 없습니다.) 
 
-```C
+```c
 void __cdecl __noreturn getFlag()
 {
   int fd; // [rsp+Ch] [rbp-34h]
@@ -63,7 +63,7 @@ void __cdecl __noreturn getFlag()
 ```
 함수를 분석해보니, 그냥 flag를 읽어 출력해주는 함수입니다. 우리는 이 함수를 호출하는 방법을 찾아야 합니다. 그래서 cross-reference를 진행해보면 `init_connection`이라는 함수 내에서 reference가 있음을 확인할 수 있습니다.
 
-```C
+```c
 void __cdecl __noreturn init_connection(vsf_session *p_sess)
 {
   signal(11, getFlag);
@@ -83,7 +83,7 @@ void __cdecl __noreturn init_connection(vsf_session *p_sess)
 사실 segmentation fault는 쉽게 트리거할 수 있지만(문제 난이도도 아주 쉽다고 설명에 적혀있었기 때문에 유추할 수 있는 부분이었습니다.), diffing을 진행한 결과에 있는 함수들에서는 어떤 함수로 이를 트리거 해야할지 판단하기 어렵습니다. 때문에 저의 경우에는 `strace` 명령어를 통해 입력을 하는 부분들을 따라가보기로 했습니다.
 ![strace](/assets/img/hacktheon2024/syscall_tracing.png)
 확인해보면 유저의 입력 이후에 `"Please login with USER and PASS."`라는 string을 출력해줌을 알 수 있었고, 이 string을 기반으로 입력을 시작하는 부분을 분석했습니다.
-```C
+```c
 void __cdecl __noreturn parse_username_password(vsf_session *p_sess)
 {
   while ( 1 )
@@ -117,7 +117,7 @@ void __cdecl __noreturn parse_username_password(vsf_session *p_sess)
 }
 ```
 코드를 확인해보면, `vsf_cmdio_get_cmd_and_arg`함수에서 입력을 받고, 여러 if condition을 거친 이후에 `vsf_cmdio_write(p_sess, 530, "Please login with USER and PASS.");` 구문이 실행되었다는 것을 알아낼 수 있습니다.
-```C
+```c
 void __cdecl vsf_cmdio_get_cmd_and_arg(vsf_session *p_sess, mystr *p_cmd_str, mystr *p_arg_str, int set_alarm)
 {
   int ret; // [rsp+2Ch] [rbp-4h]
@@ -141,7 +141,7 @@ int __cdecl control_getline(mystr *p_str, vsf_session *p_sess)
 }
 ```
 또 그 함수 내부에서는 `ftp_getline`을 호출함을 알 수 있습니다.
-```C
+```c
 int __cdecl ftp_getline(vsf_session *p_sess, mystr *p_str, char *p_buf)
 {
   int ret; // [rsp+2Ch] [rbp-14h]
@@ -181,7 +181,6 @@ remote와의 설정차이 때문에, local에서는 flag가 출력되지 않아�
 
 위와같이 flag를 open하는 것을 확인할 수 있습니다!
 
-### exploit
 ```python
 from pwn import *
 
@@ -310,7 +309,7 @@ p.interactive()
 `account`는, `unicode type`과 `ascii type`이라는 두 가지의 타입이 존재합니다. 아시다시피 unicode는 한 글자가 2bytes이며, ascii는 1byte라는 차이가 있습니다.
 
 `add account`와 `edit account`를 우선적으로 분석해보겠습니다.
-```C
+```c
 __int64 __fastcall add_acc(char acc_type, char *a2)
 {
   char *dest; // [rsp+10h] [rbp-30h]
@@ -474,13 +473,14 @@ LABEL_17:
 이 때, 우리가 해당 account를 unicode type으로 edit을 한다면 어떻게 될까요?
 만일 우리가 unicode type으로 12글자, 즉 24(0x18)bytes만큼을 입력하게 된다면, 앞서 할당된 0x19bytes의 공간 제한은 통과하게 되지만 0x18bytes를 복사한 이후 2bytes의 null byte를 채워넣는 로직에 의해 1byte의 `off-by-one` 취약점이 발생하게 됩니다.
 즉, 아래와 같은 상태가 됩니다.
+
 ![offbyone](/assets/img/hacktheon2024/1.png)
 
 
 이 바이너리에는 다양한 구조체들이 존재하며, 그 값들이 raw value 저장 및 구분되기 때문에, 이 off-by-one 취약점으로 인해 구조체들의 변조가 가능해집니다.
 
 (주요 구조체들은 아래와 같이 구성되어있습니다.)
-```C
+```c
 struct account
 {
   _BYTE type;
@@ -513,7 +513,6 @@ struct group
 
 위 과정을 거치며 shell을 획득할 수 있습니다.
 
-### Exploit
 ```python
 from pwn import *
 from time import sleep
@@ -649,7 +648,7 @@ p.interactive()
 
 바이너리를 분석을 시작할 때, 악성코드 문제등이 아닌경우 실행시켜보는것이 가장 쉽게 접근할 수 있습니다.
 
-![img](https://lh7-us.googleusercontent.com/slidesz/AGV_vUfWyZl8XKhsIxEPv63F43M2dnXemRQn66dV2DI1WKP0yTiHw4eIWq9e15sSWCMb_OOfMD-2hK_UlfDZud2T-GzpImK8ZOfv5wMR5v6ZV1_TttjJPVrg7p0xLMGtlUnlJ-awL5lU1JguwfZVxcccLB09sJoe92mo=s2048?key=iBB5N8FSRKchO_hzOd9DYw)
+![img](/assets/img/hacktheon2024/z.png)
 
 다음과 같이 실행을 해보면 입력을 받고, 해당 입력이 JSON 으로 되어야 한다는 사실 및 args 라는 key를 가져야 한다는 사실을 알 수 있습니다.
 
@@ -806,13 +805,11 @@ tx 를 보낼 때 amount를 적어 보내는데, 이 amount를 음수로 넣게 
 
 ## 5. Web - Revact
 
-react native로 제작된 웹 사이트다. 브라우저 소스보기에서 Main.5e39c7c2.js를 분석해보면 비교 연산을 해주는 것을 확인할 수 있다.
-
-Input 받을 때 검증하는 로직들이다.
+react native로 제작된 웹 사이트다. 브라우저 소스보기에서 Main.5e39c7c2.js를 분석해보면 비교 연산을 해주는 것을 확인할 수 있다. 해당 로직은 Input 받을 때 검증할 때 사용한다.
 ![](/assets/img/hacktheon2024/go4.png)
 ![](/assets/img/hacktheon2024/go5.png)
 
-단순히 조건에 맞추어 파이썬 포팅하면 `XG@@DzX`가 나오고, 이를 입력해주면 flag를 획득할 수 있다.
+조건에 맞추어 파이썬 포팅하면 `XG@@DzX`가 나오고, 이를 입력해주면 flag를 획득할 수 있다.
 
 ```py
 def find_valid_string():
@@ -1029,7 +1026,6 @@ unsigned long* encryption(unsigned long data[], unsigned long size)
 
 encryption 함수에서는 2바이트씩 암호화를 진행합니다.이때 data 배열은 4바이트이기에  최종적으로 2바이트=>4바이트로 암호화가 진행됩니다. 이는 간단하게 brute-force로 해결할 수 있습니다.
 
-#### solve.py
 
 ```python
 import string
@@ -1298,9 +1294,7 @@ able="".join([chr(i)for i in able])
 print(able) 
 ```
 
-플래그의 첫 5자리와 암호화된 결과를 xor 해서 key가 될 수 있는 후보들을 찾아줍니다.
-
-```Kcw6SG2tsPlDP```
+플래그의 첫 5자리와 암호화된 결과를 xor 해서 key가 될 수 있는 후보들을 찾아줍니다.(Kcw6SG2tsPlDP)
 
 ```python
 import itertools
@@ -1374,36 +1368,31 @@ sky.png 파일이 주어집니다. 파일이 깨져서 열리지 않습니다.
 
 ![](/assets/img/hacktheon2024/2.png)
 
-Hex Viewer로 열게 되면 PNG 파일 시그니처가 없는 것을 확인할 수 있습니다
+Hex Viewer로 열게 되면 PNG 파일 시그니처가 없는 것을 확인할 수 있습니다.
 ![](/assets/img/hacktheon2024/3.png)
 
-다른 정상 PNG 파일에서 없어진 헤더 부분을 가져다 복구하면 플래그를 확인할 수 있습니다
+다른 정상 PNG 파일에서 없어진 헤더 부분을 가져다 복구하면 플래그를 확인할 수 있습니다.
 
 ![](/assets/img/hacktheon2024/4.png)
 
 ## 11. Forensic - Rumor1
 
-Rumor 문제는 5개의 파트로 구성된 문제다.
-
-첫번째 파트는 Mail 서버의 IP 주소를 찾는 문제이다.
-
-evtx_dump를 이용해 xml로 추출하여 분석하였다.
+Rumor 문제는 5개의 파트로 구성된 문제입니다. 첫번째 파트는 Mail 서버의 IP 주소를 찾는 문제로, evtx_dump를 이용해 xml로 추출하여 분석하였습니다.
 
 ![](/assets/img/hacktheon2024/image5.png)
 
 mail 키워드를 검색하면 `mail.mnd.go.kr`, 즉 IP는 `92.68.200.206`인 것을 알 수 있다.
 
-
 ## 12. Forensic - Rumor2
 
 
-두번째 파트는 공격자가 세션 연결을 위해 실행한 악성 프로세스의 PID를 구하는 문제이다.
+두번째 파트는 공격자가 세션 연결을 위해 실행한 악성 프로세스의 PID를 구하는 문제입니다.
 
 세션 연결을 위해서는 netcat, bash -i, python 등 여러 가지 방법으로 리버스 쉘을 열 수 있다.
 
 ![](/assets/img/hacktheon2024/image6.png)
 
-이 문제에서는 `nc64.exe`를 사용해 리버스 쉘을 생성하였다.
+이 문제에서는 `nc64.exe`를 사용해 리버스 쉘을 생성함을 확인할 수 있습니다.
 
 `nc64.exe`의 PID는 `3868`이다.
 
