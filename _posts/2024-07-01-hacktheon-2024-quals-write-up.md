@@ -128,8 +128,10 @@ void __cdecl vsf_cmdio_get_cmd_and_arg(vsf_session *p_sess, mystr *p_cmd_str, my
   ...
 }
 ```
+
 `vsf_cmdio_get_cmd_and_arg`함수는 `control_getline`함수로 입력을 받는 것을 확인할 수 있고..
-```C
+
+```c
 int __cdecl control_getline(mystr *p_str, vsf_session *p_sess)
 {
   unsigned int len; // [rsp+18h] [rbp-8h]
@@ -139,8 +141,11 @@ int __cdecl control_getline(mystr *p_str, vsf_session *p_sess)
     vsf_secbuf_alloc(&p_sess->p_control_line_buf, 0x1000u);
   ret = ftp_getline(p_sess, p_str, p_sess->p_control_line_buf);
 }
+
 ```
+
 또 그 함수 내부에서는 `ftp_getline`을 호출함을 알 수 있습니다.
+
 ```c
 int __cdecl ftp_getline(vsf_session *p_sess, mystr *p_str, char *p_buf)
 {
@@ -382,7 +387,7 @@ add account함수는 위와 같이 구현되어있습니다.
 그 이후 입력받은 버퍼를 공간에 복사하는데, unicode를 copy를 할 때에는 별도의 함수로 copy를 진행합니다.
 `copy_unicode`도 추가적으로 분석해봅시다.
 
-```C
+```c
 _BYTE *__fastcall copy_unicode(_BYTE *a1, _BYTE *a2)
 {
   bool is; // [rsp+17h] [rbp-29h]
@@ -409,7 +414,7 @@ _BYTE *__fastcall copy_unicode(_BYTE *a1, _BYTE *a2)
 
 취약점은 `edit account`기능에 존재합니다.
 
-```C
+```c
 __int64 __fastcall edit_acc(char write_type, unsigned __int8 a2, char *a3)
 {
   unsigned int len; // [rsp+Ch] [rbp-24h]
