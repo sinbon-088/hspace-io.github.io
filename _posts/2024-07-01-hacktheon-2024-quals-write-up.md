@@ -504,14 +504,7 @@ struct group
 구조체 변조 이후에는 원하는 exploit plan을 세워서 마무리하면 됩니다.
 
 제 exploit 과정은 아래와 같습니다.
-1. memory map leak
-1.1 두 개의 ascii account를 할당
-1.2. off-by-one 취약점을 통해, 두 번째 ascii account를 unicode type으로 변조
-1.3. 하나의 추가적인 큰 크기를 가진 ascii account를 할당
-1.4. 그룹 생성 및 큰 크기의 account를 그룹에 추가
-1.5. 변조된 두 번째 account를 통해 그룹에 추가된 account의 reference count를 1로 조작
-1.6. 그룹에서 account를 삭제하면, reference count가 0이 되므로 할당 해제되지만 account 배열 전역변수에는 존재
-1.7 uaf를 통해 값 할당 이후 해당 값을 읽어들이면 memory leak. 
+1. memory map leak <ol type="I"><li>두 개의 ascii account를 할당</li><li>off-by-one 취약점을 통해, 두 번째 ascii account를 unicode type으로 변조</li><li>하나의 추가적인 큰 크기를 가진 ascii account를 할당</li><li>그룹 생성 및 큰 크기의 account를 그룹에 추가</li><li>변조된 두 번째 account를 통해 그룹에 추가된 account의 reference count를 1로 조작</li><li>그룹에서 account를 삭제하면, reference count가 0이 되므로 할당 해제되지만 account 배열 전역변수에는 존재</li><li>uaf를 통해 값 할당 이후 해당 값을 읽어들이면 memory leak.</li></ol>
 2. 위와 비슷한 과정을 반복하여 AAR, AAW를 획득
 3. `environ leak`
 4. `stack ROP`
