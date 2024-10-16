@@ -3,7 +3,7 @@ title: SageMath 튜토리얼
 description: SageMath에 대해 자세히 알아봅시다.
 # author: 김수진(Sujini)
 date: 2024-09-25 02:17:33 +0900
-tags: [tech, Crypto, Tutorial]
+tags: [Tech, Crypto, Tutorial]
 categories: [Tech, Crypto, Tutorial]
 comments: false
 math: true

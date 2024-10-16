@@ -732,7 +732,7 @@ $btn-mb: 0.5rem;
   .site-title {
     font-family: inherit;
     font-weight: 900;
-    font-size: 1.75rem;
+    font-size: 1.50rem;
     line-height: 1.2;
     letter-spacing: 0.25px;
     margin-top: 1.25rem;
@@ -755,6 +755,7 @@ $btn-mb: 0.5rem;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    font-style: normal !important;
   }
 
   ul {
@@ -771,7 +772,7 @@ $btn-mb: 0.5rem;
 
         display: flex;
         align-items: center;
-        border-radius: 0.75rem;
+        border-radius: 0.30rem;
         font-weight: 600;
 
         &:hover {
@@ -827,7 +828,7 @@ $btn-mb: 0.5rem;
       justify-content: center;
 
       &:not(:focus-visible) {
-        box-shadow: var(--sidebar-border-color) 0 0 0 1px;
+        box-shadow: var(--sidebar-border-color) 0 0 0 0px;
       }
 
       &:hover {

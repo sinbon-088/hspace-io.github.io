@@ -1,14 +1,15 @@
 ---
-title: CSS injection
+title: CSS injection#1
 description: 다양한 CSS injection을 배워봅시다.
 # author: 임예준(Burnnnnny)
 date: 2024-10-14 02:17:33 +0900
-tags: [tech, Web]
-categories: [Tech, Web, CTF]
+tags: [Tech, Webhacking, CTF]
+categories: [Tech, Webhacking, CTF]
 comments: false
 math: true
 mermaid: false
 pin: false
+image: /assets/img/CSS_injection/CSS_injection_thumbnali.png
 ---
 
 ## 목차

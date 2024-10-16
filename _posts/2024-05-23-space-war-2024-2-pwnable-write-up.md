@@ -3,12 +3,13 @@ title: Space War 2024#2 (Pwnable) write-up
 description: Space War 2024 2번째 Pwnable write-up입니다.
 # author: snwo
 date: 2024-05-23 02:17:33 +0900
-tags: [spacewar, pwnable]
+tags: [Spacewar, Pwnable]
 categories: [SpaceWar, Pwnable]
 comments: false
 math: true
 mermaid: false
 pin: false
+image: /assets/img/spacewar/space_war_2.png
 ---
 
 ### 목차

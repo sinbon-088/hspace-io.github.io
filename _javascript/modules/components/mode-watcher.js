@@ -9,6 +9,6 @@ export function modeWatcher() {
   }
 
   toggle.addEventListener('click', () => {
-    modeToggle.flipMode();
+    modeToggle;
   });
 }
