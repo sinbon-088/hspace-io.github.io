@@ -1,6 +1,8 @@
 /* The common styles */
 
 html {
+  font-size: 16px;
+  
   @media (prefers-color-scheme: light) {
     &:not([data-mode]),
     &[data-mode='light'] {
@@ -23,7 +25,7 @@ html {
     }
   }
 
-  font-size: 16px;
+
 }
 
 body {
