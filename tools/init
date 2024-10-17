@@ -11,6 +11,12 @@ ACTIONS_WORKFLOW=pages-deploy.yml
 
 RELEASE_HASH=$(git log --grep="chore(release):" -1 --pretty="%H")
 
+# RELEASE_HASH가 빈 문자열인 경우 종료
+if [[ -z "$RELEASE_HASH" ]]; then
+  echo "Error: No release commit found with message 'chore(release):'."
+  exit 1
+fi
+
 # temporary file suffixes that make `sed -i` compatible with BSD and Linux
 TEMP_SUFFIX="to-delete"
 
