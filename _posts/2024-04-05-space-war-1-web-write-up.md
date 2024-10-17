@@ -3,11 +3,12 @@ title: Space War 2024#1 (Web) write-up
 description: Space War 2024#1 Web write-up입니다.
 # author: ipwn
 date: 2024-04-05 02:17:35 +0900
-tags: [spacewar, webhacking]
+tags: [Spacewar, Webhacking]
 categories: [SpaceWar, Webhacking]
 math: true
 mermaid: false
 pin: false
+image: /assets/img/spacewar/space_war_1.png
 ---
 
 ### 목차
