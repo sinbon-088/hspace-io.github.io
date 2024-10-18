@@ -1,7 +1,7 @@
 ---
 title: CSS injection#1
 description: 다양한 CSS injection을 배워봅시다.
-# author: 임예준(Burnnnnny)
+author: 임예준(Burnnnnny)
 date: 2024-10-14 02:17:33 +0900
 tags: [Tech, Webhacking, CTF]
 categories: [Tech, Webhacking, CTF]

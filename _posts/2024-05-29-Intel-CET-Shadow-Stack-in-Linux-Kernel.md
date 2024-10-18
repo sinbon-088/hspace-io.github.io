@@ -1,7 +1,7 @@
 ---
 title: Intel CET Shadow Stack in Linux Kernel
 description: Ubuntu 24.04의 리눅스 커널에 도입된 Intel CET의 쉐도우 스택에 대해서 자세히 알아봅시다.
-# author: 김영민(OSORI)
+author: 김영민(OSORI)
 date: 2024-05-29 02:17:33 +0900
 tags: [Tech, Pwnable]
 categories: [Tech, Pwnable]
