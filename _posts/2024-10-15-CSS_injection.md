@@ -35,13 +35,13 @@ CSS injection에 대한 기본적인 개념을 간단히 설명하긴 하지만 
 
 ---
 ### CSS injection
-CSS injection은 웹페이지에 임의의 CSS 구문을 삽입하거나 <style> 태그를 사용하여 악의적인 스타일을 주입하는 공격 기법을 말합니다.
+CSS injection은 웹페이지에 임의의 CSS 구문을 삽입하거나 `<style>` 태그를 사용하여 악의적인 스타일을 주입하는 공격 기법을 말합니다.
 
 보통 HTML을 주입할 수 있으나 CSP(Content Security Policy)에 의해 JavaScript를 사용할 수 없는 경우나 DOMPurify로 인해 위험한 태그들이 sanitize 됐을 때 CSS로 악의적인 행동을 수행할 수 있습니다.
 
 또한 CSS는 외부 리소스를 불러오는 기능을 제공하기 때문에 외부 서버로 요청을 보낼 수 있습니다. 
 
-> DOMPurify는 기본적으로 독립된 <style> 태그는 sanitize하지만, 다른 태그 내부에 중첩된 <style> 태그는 sanitize하지 않습니다.
+> DOMPurify는 기본적으로 독립된 `<style>` 태그는 sanitize하지만, 다른 태그 내부에 중첩된 `<style>` 태그는 sanitize하지 않습니다.
 
 ![DOMPurify Example 1](/assets/img/CSS_injection/1.png){: width="60%" style="display: block; margin: 0 auto 25px auto; border: 2px dashed #000; padding: 10px; box-sizing: border-box;"}
 
