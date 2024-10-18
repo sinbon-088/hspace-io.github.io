@@ -1,7 +1,7 @@
 ---
 title: 직접 만들어보는 리눅스 디버거 (without ptrace)
 description: Ptrace 시스템 콜 없이 리눅스에서 동작하는 디버거를 만들어봅시다.
-# author: 김영민(OSORI)
+author: 김영민(OSORI)
 date: 2024-09-23 01:23:33 +0900
 tags: [Tech, Reversing]
 categories: [Tech, Reversing]
