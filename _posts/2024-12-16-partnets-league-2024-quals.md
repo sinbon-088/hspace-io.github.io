@@ -1392,3 +1392,25 @@ CPython에서는 int를 str로 변환할 때 글자 수에 제한이 걸려 있�
 
 ## 16. Web3 - space-miner
 
+먼저, blockscout 등의 도구로 배포된 컨트랙트의 주소를 확인합니다.
+
+이후, 디컴파일을 해보면 다음과 같은 로직을 확인할 수 있습니다.
+
+```
+function customMine(uint256 nonce) public nonReentrant {
+// require(!usedNonces[msg.sender][nonce], "Nonce already used");
+// usedNonces[msg.sender][nonce] = true;
+
+console.log("msg.sender: %s, nonce: %s, custom_hash: %s", msg.sender, nonce, custom_hash);
+
+bytes32 digest = keccak256(abi.encodePacked(msg.sender, nonce, custom_hash));
+console.log("digest: %s", uint256(digest));
+require(uint256(digest) < difficulty, "Mining difficulty not reached");
+
+custom_hash = uint256(digest);
+
+_mint(msg.sender, reward);
+}
+```
+
+custom_hash는 public 변수이기 때문에, nonce와 custom_hash를 적절히 이용해 keccak256 hash를 생성하여 difficulty를 통과하면 코인을 획득할 수 있습니다.
