@@ -9,7 +9,7 @@ comments: false
 math: true
 mermaid: false
 pin: false
-image: /assets/img/dbi/dbi_thumbnail.jpg
+image: /assets/img/DBI/dbi_thumbnail.jpg
 ---
 # Dynamic Binary Instrumentation with Intel Pin
 
