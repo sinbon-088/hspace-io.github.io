@@ -1,6 +1,20 @@
+---
+title: 2025 irisCTF pwn writeup
+description: 2025 irisCTF userland pwnable 문제 풀이입니다.
+author: 조수호(shielder)
+date: 2025-02-19 20:00:00 +0900
+tags: [Tech, CTF, pwn]
+categories: [Tech, CTF, pwn]
+comments: false
+math: true
+mermaid: false
+pin: false
+image: /assets/img/2025irisctf_pwn_wu/2025irisctf_logo.jpg
+---
 # 2025 irisCTF pwn writeup
 
 ### shielder(조수호)
+
 ### 목차
 
 1. pwn / sqlate
@@ -388,7 +402,7 @@ void action_list()
 }
 ```
 
-`action_list`는 `sql`에 있던 글들을 `paste`에 옮겨 `print_paste` 함수를 통해 출력합니다. 이 때 `content` 영역의 내용이 위의 `action_update` 함수에 의해 최대 384바이트가 되어 메모리 오버플로우(memory overflow)가 발생합니다. `paste`와 `current_user`가 붙어있기 때문에 `current_user`의 flag를 덮을 수 있습니다. 이렇게 사용자에게 `permission_root`를 부여하고 `flag`를 읽습니다.
+`action_list`는 `sql`에 있던 글들을 `paste`에 옮겨 `print_paste` 함수를 통해 출력합니다. 이 때 `content` 영역의 내용이 위의 `action_update` 함수에 의해 최대 384바이트가 되어 메모리 오버플로우(memory overflow)가 발생합니다. `paste`와 `current_user`가 붙어있기 때문에 `current_user`의 `flag`를 덮을 수 있습니다. 이렇게 사용자에게 `permission_root`를 부여하고 `flag`를 읽습니다.
 
 <br>
 - 솔버
@@ -931,7 +945,7 @@ unsigned __int64 uploadFile()
 `uploadFile`은 지정된 사용자 영역에 파일을 업로드하는 함수입니다. 사용자 id에 대한 입력 검증이 존재합니다. `readHex` 함수를 통해 zip 파일을 바이너리의 Hex 형태로 입력받습니다. 그 후 `readZipInfo` 함수에서 zip 파일 데이터를 검증합니다. zip 파일 Header 구성을 보며 검증 부분을 자세히 분석하겠습니다.
 
 <br>
-![[Pasted image 20250213193901.png]]
+![image.png](/assets/img/2025irisctf_pwn_wu/zip_file_structure.png)
 
 `readZipInfo` 함수에 zip 파일을 등록하기 위한 조건문이 6개 있습니다.
 
