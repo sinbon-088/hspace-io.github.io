@@ -9,7 +9,7 @@ comments: false
 math: true
 mermaid: false
 pin: false
-image: /assets/img/2025irisctf_pwn_wu/2025irisctf_logo.jpg
+image: /assets/img/2025irisctf_pwn_wu/iris.jpg
 ---
 # 2025 irisCTF pwn writeup
 
