@@ -41,7 +41,6 @@ image: /assets/img/2025irisctf_pwn_wu/iris.jpg
 
 sqlite라는 생소한 개념을 앞세웠지만 취약점은 단순한 메모리 오버플로우 문제입니다. 코드만 잘 이해하면 바로 풀 수 있습니다.
 
-<br>
 ```bash
 Arch:       amd64-64-little
 RELRO:      Partial RELRO
@@ -54,13 +53,11 @@ Debuginfo:  Yes
 
 RELRO가 Partial RELRO입니다. got overwrite가 필요한 경우 사용할 수 있습니다.
 
-<br>
 - 분석
 
 코드가 굉장히 길기 때문에 영리한 분석이 필요합니다. 대회에서 이 문제를 풀 때 저는 플래그 출력 함수부터 역과정으로 분석하였습니다. 이 글에서는 구조체부터 정방향으로 분석하겠습니다.
 
-<br>
-```C
+```c
 enum user_flags {
     permission_create = 1<<1,
     permission_update = 1<<2,
@@ -99,8 +96,7 @@ struct user current_user;
 
 이 프로그램은 두 구조체를 정의하고 있습니다. `paste`는 글 정보를 저장하는 구조체이고, `user`는 사용자 정보를 저장하는 구조체입니다. `user_flag` 열거형은 `user`의 권한을 나타냅니다. `permission_root`가 우리가 부여해야 하는 권한입니다. `struct paste paste`와 `struct user current_user`가 인접하게 선언되어 있습니다. IDA에서도 bss 영역에 인접하게 선언되어 있음을 확인할 수 있습니다.
 
-<br>
-```C
+```c
 int main(void) {
     setbuf(stdout, NULL);
     setbuf(stdin, NULL);
@@ -201,8 +197,7 @@ void action_sys()
 
 `init_admin`, `login_anonymous` 와 `sqlite` 관련 함수를 실행하면서 초기 작업을 진행합니다. 그 후 저희가 실행시킬 수 있는 함수가 6개 있습니다. 각 함수를 실행시키기 위해서는 특정 권한이 필요합니다. 7번 메뉴의 `action_sys` 함수는 `flag`를 출력해주며, 사용자에게 `permission_root` 권한이 필요합니다.
 
-<br>
-```C
+```c
 void login_anonymous()
 {
     current_user.userId = -1;
@@ -230,8 +225,7 @@ void init_admin()
 
 `login_anonymous` 함수에서는 사용자의 권한을 설정합니다. 사용자에게 `permission_root`은 부여되지 않습니다. `init_admin` 함수에서는 `admin_password`을 무작위 100바이트로 설정합니다. 무작위 100바이트는 엔트로피가 굉장히 크므로 무차별 대입 공격은 할 수 없습니다.
 
-<br>
-```C
+```c
 void read_to_buffer(const char *description)
 {
     printf("Enter %s: ", description);
@@ -349,8 +343,7 @@ void action_update()
 
 `read_to_buffer`는 단순히 입력을 받는 함수입니다. `action_create` 함수는 글에 대한 정보를 입력받고 `sql`에 저장합니다. `action_update` 함수는 `sql`에 있는 글의 정보를 갱신할 수 있습니다. `language` 영역 갱신은 특이한 내용이 없습니다. `content` 영역 갱신은, `None`, `base64`, `hex`의 형식으로 할 수 있습니다. 이때 `hex`를 처리하기 전 입력 길이의 제한이 192바이트이므로 `hex` 처리하면 384바이트가 됩니다.
 
-<br>
-```C
+```c
 void print_paste(struct paste *paste)
 {
     printf("===== Paste %d =====\n", paste->rowId);
@@ -404,7 +397,6 @@ void action_list()
 
 `action_list`는 `sql`에 있던 글들을 `paste`에 옮겨 `print_paste` 함수를 통해 출력합니다. 이 때 `content` 영역의 내용이 위의 `action_update` 함수에 의해 최대 384바이트가 되어 메모리 오버플로우(memory overflow)가 발생합니다. `paste`와 `current_user`가 붙어있기 때문에 `current_user`의 `flag`를 덮을 수 있습니다. 이렇게 사용자에게 `permission_root`를 부여하고 `flag`를 읽습니다.
 
-<br>
 - 솔버
 
 ```python
@@ -430,10 +422,9 @@ p.sendlineafter(b'>', b'7')
 p.interactive()
 ```
 
-<br>
 - 후일담
 
-```C
+```c
 void action_login()
 {
     // Currently only admin login
@@ -467,7 +458,6 @@ void action_login()
 
 코드를 보면 취약점 하나가 쉽게 보이지만 첫 단추를 발견하기 쉽지 않습니다. zip 파일 조작이 아니면 순수 바이너리로만은 익스할 수 없기 때문에 발상의 전환이 없으면 풀기 힘든 문제입니다.
 
-<br>
 ```bash
 Arch:       amd64-64-little
 RELRO:      Full RELRO
@@ -481,10 +471,9 @@ Stripped:   No
 
 모든 보호기법이 적용되어 있습니다.
 
-<br>
 - 분석
 
-```C
+```c
 int __fastcall main(int argc, const char **argv, const char **envp)
 {
   int v4; // [rsp+14h] [rbp-Ch] BYREF
@@ -546,8 +535,7 @@ LABEL_20:
 
 `setupUsers` 함수 실행 후에 6가지 메뉴가 있는 반복문이 작동합니다.
 
-<br>
-```C
+```c
 size_t __fastcall readFile(void *a1, const char *a2, int a3)
 {
   __int64 n; // [rsp+28h] [rbp-18h]
@@ -646,8 +634,7 @@ __int64 askUserAndPass()
 
 `setupUsers` 함수에서는 `fileUsers` 데이터를 초기화합니다. 15번 인덱스에 `Tom` 사용자 정보를 쓰고, `readFile` 함수를 통해 `invite.zip` 파일을 읽고 저장합니다. `invite.zip` 내부의 `invitecode.txt`에는 `invitecode`가 있습니다. 직접 계산해본 결과, `fileUsers` 데이터 영역에 memory overflow 취약점은 없습니다. `askUserAndPass` 함수는 메뉴에 있는 많은 함수의 기초 함수로, 검증을 요청하는 사용자의 비밀번호를 알고 있는지를 확인합니다.
 
-<br>
-```C
+```c
 int listUsers()
 {
   __int64 v0; // rax
@@ -695,8 +682,7 @@ unsigned __int64 listFiles()
 
 `listUsers` 함수에서는 현재 등록된 사용자 목록을 보여줍니다. `listFiles` 함수는 사용자 id를 입력받고 해당 사용자에 등록되어 있는 파일 목록을 보여줍니다. 유효한 사용자 id 체크를 진행하며, 후의 모든 함수에서도 이 부분에 대한 취약점은 없습니다.
 
-<br>
-```C
+```c
 bool __fastcall checkInvite(const void *a1)
 {
   char v2[8]; // [rsp+30h] [rbp-30h] BYREF
@@ -757,8 +743,7 @@ unsigned __int64 createUser()
 
 `createUser` 함수는 새로운 사용자를 등록합니다. 이 때 `checkInvite` 함수를 통과해야 합니다. `readZipinfo` 함수는 뒤에서 자세히 설명하겠으며, `checkInvite` 함수에서는 `Tom`의 `invite.zip`의 `invitecode.txt`, 즉 `invitecode`를 읽습니다. 따라서 `invitecode`를 모르면 사용자를 추가할 수 없습니다.
 
-<br>
-```C
+```c
 __int64 __fastcall readHex(__int64 a1, __int64 a2, int a3)
 {
   int v3; // eax
@@ -944,7 +929,6 @@ unsigned __int64 uploadFile()
 
 `uploadFile`은 지정된 사용자 영역에 파일을 업로드하는 함수입니다. 사용자 id에 대한 입력 검증이 존재합니다. `readHex` 함수를 통해 zip 파일을 바이너리의 Hex 형태로 입력받습니다. 그 후 `readZipInfo` 함수에서 zip 파일 데이터를 검증합니다. zip 파일 Header 구성을 보며 검증 부분을 자세히 분석하겠습니다.
 
-<br>
 ![image.png](/assets/img/2025irisctf_pwn_wu/zip_file_structure.png)
 
 `readZipInfo` 함수에 zip 파일을 등록하기 위한 조건문이 6개 있습니다.
@@ -958,8 +942,7 @@ unsigned __int64 uploadFile()
 
 이 모든 조건을 통과하면 파일을 저장하는데, 압축 대상 파일(예를 들어 `invite.zip`의 `invitecode.txt`)의 내용을 `hash` 함수(`FNV-1`, 복호화할 수 없는 해시 기법이다.)를 이용하여 해시화하여 같이 저장합니다. 이 해시값은 `listFiles` 함수에서 볼 수 있는 내용입니다.
 
-<br>
-```C
+```c
 unsigned __int64 viewFile()
 {
   __int64 v0; // rax
@@ -1030,19 +1013,16 @@ unsigned __int64 viewFlag()
 
 `viewFile` 함수에서는 `askUserAndPass` 함수를 통과한 사용자에 있는 파일을 읽을 수 있습니다. 이 때 `FSB` 취약점이 있음을 알 수 있습니다. `viewFlag` 함수에서는 `askUserAndPass` 함수로 `admin` 권한이 있는 사용자를 인증하면 flag를 얻을 수 있습니다. `setupUsers` 함수를 보면 `admin` 권한은 `Tom`에게 있으며, `createUser` 함수도 참고하면 `admin` 권한은 다른 사용자에게는 부여되지 않음을 알 수 있습니다.
 
-<br>
 - 익스플로잇 설계
 
 `FSB` 취약점을 사용할 수 있는 상황이 된다면 어떻게든 `flag`를 읽을 수 있습니다. `FSB` 취약점은 `viewFile` 함수에 있으며, `FSB`를 트리거하기 위해선 `askUserAndPass` 함수를 통과해야 합니다. 하지만 `Tom`의 비밀번호는 모르므로 `1. Tom의 비밀번호를 알아낸다.`와 `2. 새로운 사용자를 만든다.`의 두 가지 접근 방법이 있습니다. 그런데 `askUserAndPass` 함수에서 입력 받는 길이는 49바이트인데, `Tom`의 비밀번호는 63바이트이므로 `Tom`의 비밀번호를 알아내도 사용할 수 없기에 2번의 방법을 사용합니다.
 새로운 사용자는 `createUser` 함수를 통해 만들 수 있지만, `checkInvite` 함수를 통과해야 합니다. 즉 `invite.zip` 안의 `invitecode.txt`의 내용을 읽을 수 있어야 합니다. 정리하자면, `Tom`의 0번째 파일인 `invitecode.txt`의 내용을 읽는다면 `flag`를 읽을 수 있습니다.
 
-<br>
 `askUserAndPass` 함수를 통과하지 못하는 상황에서 우리가 입력할 수 있는 것은 `uploadFile` 함수를 통한 zip 파일 뿐입니다. 그런데 우리가 입력한 파일은 `invite.zip` 뒤에 저장되기 때문에 음수 인덱스 접근이 가능해야 합니다. 이제
 1. 음수 인덱스 접근
 2. `invitecode.txt` 내용을 가져올 방법
 을 생각해야 합니다. 2번을 생각해보면 우리는 아무 권한도 없는 상황에서 파일의 제목, 길이, 해시 값을 알 수 있습니다. 여기서는 해시 값으로만 데이터의 정보를 확인할 수 있습니다. 해시 값을 조종하려면 제목의 길이를 음수로 만들어야 한다는 결론이 나옵니다.
 
-<br>
 ```asm
 mov     rax, [rbp+var_8]
 mov     eax, [rax]
@@ -1055,13 +1035,12 @@ lea     rdi, aExtraFieldNotS
 call    _puts
 jmp     locret_184F
 ```
+
 제목의 길이를 음수로 만들 수 없던 것은  `readZipInfo` 함수의 세 번째 조건문, `v7 = (_DWORD *)(a2 + 26); v6 = *v7; if ( v6 == (__int16)v6 )` 때문입니다. `File name len`이 `0xffff`라고 가정해봅시다. `cwde`에 의해 `eax`가 `0xffffffff`가 되기 때문에 `[rbp-0x14] != eax`가 됩니다. 이를 우회하는 방법은 모순적이게도 `Extra field len`을 사용하는 것입니다. 처음에 `rax`의 형태로 8바이트를 읽어옴을 알 수 있습니다. `rax`가 `0xffffffff`라면 `cwde` 후에도 `0xffffffff`이기 때문에 값이 같습니다. 이렇게 음수 인덱스에 접근할 수 있습니다.
 
-<br>
 파일 데이터 전에는 고정된 값 9바이트가 존재합니다. 따라서 `File name len + Extra field len`이 변조된 10바이트짜리 zip 파일을 입력하고 해시 값을 받아오면, 마지막 바이트 브루트포싱을 통해 `invitecode.txt`의 내용을 한 글자씩 알아올 수 있습니다.
 `invitecode.txt`를 얻었으니 위의 브레인스토밍 과정을 역으로 따라가면 됩니다. 새로운 사용자를 만들고, `FSB`를 유발하는 zip 파일을 업로드하고, 이를 읽어 `admin` 권한을 부여하는 `FSB` payload를 작동하고 `flag`를 읽습니다.
 
-<br>
 - 솔버
 
 ```python
@@ -1159,7 +1138,6 @@ p.interactive()
 # zip -X -0 tb.zip tb.txt
 ```
 
-<br>
 - 후일담
 
 `Finder(이재영)`가 아주 중요한 아이디어를 불어넣어 줘서 이 문제를 풀었다 해도 과언이 아닐 정도로 저에게 많은 도움을 주었습니다. 이 글을 빌러 고맙다는 말을 전합니다.
