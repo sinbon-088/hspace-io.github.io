@@ -1217,9 +1217,9 @@ search {
 /*
   Responsive Design:
 
- {sidebar, content, panel} >= 1200px screen width
- {sidebar, content} >= 850px screen width
- {content} <= 849px screen width
+ {sidebar, content, panel} >= 1280px screen width
+ {sidebar, content} >= 1024px screen width
+ {content} <= 1023px screen width
 
 */
 
@@ -1257,7 +1257,7 @@ search {
 }
 
 /* hide sidebar and panel */
-@media all and (max-width: 849px) {
+@media all and (max-width: 1023px) {
   @mixin slide($append: null) {
     $basic: transform 0.4s ease;
 
@@ -1346,10 +1346,10 @@ search {
       margin-top: 2.5rem;
     }
   }
-} /* max-width: 849px */
+} /* max-width: 1023px */
 
 /* Sidebar is visible */
-@media all and (min-width: 850px) {
+@media all and (min-width: 1024px) {
   /* Solved jumping scrollbar */
   html {
     overflow-y: scroll;
@@ -1400,7 +1400,7 @@ search {
 }
 
 /* Pad horizontal */
-@media all and (min-width: 992px) and (max-width: 1199px) {
+@media all and (min-width: 992px) and (max-width: 1279px) {
   #main-wrapper > .container .col-lg-11 {
     flex: 0 0 96%;
     max-width: 96%;
@@ -1408,7 +1408,7 @@ search {
 }
 
 /* Compact icons in sidebar & panel hidden */
-@media all and (min-width: 850px) and (max-width: 1199px) {
+@media all and (min-width: 1024px) and (max-width: 1279px) {
   #search-results > div {
     max-width: 700px;
   }
@@ -1423,7 +1423,7 @@ search {
 }
 
 /* panel hidden */
-@media all and (max-width: 1199px) {
+@media all and (max-width: 1279px) {
   #panel-wrapper {
     display: none;
   }
@@ -1435,7 +1435,7 @@ search {
 
 /* --- desktop mode, both sidebar and panel are visible --- */
 
-@media all and (min-width: 1200px) {
+@media all and (min-width: 1280px) {
   search {
     margin-right: 4rem;
   }
