@@ -1271,18 +1271,109 @@ m&&m(mnnm)입니다! C 문법에 따라 접근하면 `m&&m`은 `!!m`의 값을 �
 
 ## 11. Crypto - HalfHalf
 
+```python
+# https://eprint.iacr.org/2023/841.pdf
+import json
+import signal
+import sys
+from hashlib import sha256
+from secrets import token_bytes
+from typing import Any, Dict
 
-Implement section 3.2 of https://eprint.iacr.org/2023/841.pdf. This chall modifies original equation for nonce:
+from ecdsa import SECP256k1, SigningKey
 
-Original: `k = ((h >> l) << l) | (d >> l))`
+from flag import flag
 
-This chall: `k = ((d & MASK) << l) | (h & MASK)`
+l = 128
+MASK = (1 << l) - 1
 
-Recentering is enough to gain over 75% correctness. This result aligns with the paper.
+
+def send_msg(data: Dict):
+    sys.stdout.write(json.dumps(data) + "\n")
+    sys.stdout.flush()
 
 
+def recv_msg() -> Dict[str, Any]:
+    data = sys.stdin.readline().strip()
+    return json.loads(data)
+
+
+def main():
+    trials = 100
+    correct = 0
+    for _ in range(trials):
+        sk = SigningKey.generate(curve=SECP256k1, hashfunc=sha256)
+        pk = sk.privkey.secret_multiplier
+        pubkey = sk.get_verifying_key().pubkey
+        send_msg({"x": int(pubkey.point.x()), "y": int(pubkey.point.y())})
+
+        msg = token_bytes(32)
+        h = int.from_bytes(sha256(msg).digest(), byteorder="big")
+        k = ((pk & MASK) << l) | (h & MASK)
+        sig = sk.sign(msg, k=k)
+        send_msg({"msg": msg.hex(), "sig": sig.hex()})
+
+        pk_ = recv_msg()["pk"]
+        if pk_ == pk:
+            correct += 1
+
+    assert correct / trials >= 0.75
+    send_msg({"flag": flag})
+
+
+if __name__ == "__main__":
+    signal.alarm(60)
+    main()
+```
+
+논문 [The curious case of the half-half Bitcoin ECDSA nonces](https://eprint.iacr.org/2023/841.pdf) 의 3.2절을 변형하는 문제입니다. ECDSA에서 사용되는 nonce `k`를 암호학적 난수로 사용하지 않았을때 발생하는 개인키 복구 공격 방식을 다룹니다. 기존 논문에서는 nonce `k`를 다음과 같이 생성하였을때 개인키 복구 공격을 다룹니다:
+- Original: `k = ((h >> l) << l) | (d >> l))`
+
+이 문제에서는 아래와 같이 nonce `k`를 변형합니다:
+- This chall: `k = ((d & MASK) << l) | (h & MASK)`
+
+기존 논문과 이 문제는 동일하게 LLL 알고리즘을 통하여 Hidden Number Problem(HNP)을 푸는 것으로 환원됩니다.
+
+문제에서는 총 100개의 개인키 복구 시도 중 최소 75개의 공격이 성공하여야 합니다. 논문의 3.2절에서 언급되는 recentering을 활용하여, 75% 이상의 정확도를 이끌어낼 수 있습니다:
+
+다음은 서명과 평문, 공개키를 바탕으로, HNP를 푸는 구현입니다.
+
+```python
+def attack(r, s, m, pubkey):
+    h = int.from_bytes(sha256(m).digest(), byteorder="big")
+    h_msb = h >> l
+    h_lsb = h & ((2**l) - 1)
+    assert h == (h_msb << l) + h_lsb
+
+    t = 1 - s * pow(r, -1, n) * 2**l
+    A = (pow(t, -1, n) * 2**l) % n
+
+    b = (h - s * h_lsb) * pow(r, -1, n)
+    b += 2 ** (l - 1) * t
+    b += 2**l * 2 ** (l - 1)
+    b *= pow(t, -1, n)
+    b %= n
+
+    B = matrix(ZZ, [[n, 0, 0], [A, 1, 0], [b, 0, 2 ** (l - 1)]])
+    L = B.LLL()
+
+    for row in L:
+        for target in [(-1, -1), (-1, 1), (1, -1), (1, 1)]:
+            d_lsb_cand = target[0] * row[0] + (2 ** (l - 1))
+            d_msb_cand = target[1] * row[1] + (2 ** (l - 1))
+            d_cand = (d_msb_cand << l) + d_lsb_cand
+            if pubkey != d_cand * G:
+                continue
+            return d_cand
+    return 0
+```
+
+
+Flag:
+
+```
 hspace{Always_see_the_entropy_as_half_full_51bdb3b0}
-
+```
 
 ## 12. Crypto - zkLabyrinth
 
