@@ -8,7 +8,7 @@ comments: false
 math: true
 mermaid: false
 pin: false
-image: /assets/img/hacktheon2024/hecktheon2024_thumbnail.png
+image: /assets/img/2024partners-league-quals/2024-partners-league-qual.jpg
 ---
 
 ## 목차
