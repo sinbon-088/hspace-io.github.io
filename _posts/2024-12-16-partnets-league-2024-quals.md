@@ -721,7 +721,101 @@ if __name__ == "__main__":
 
 ## 4. Web - denostore
 
-Deno kv에서의 race condition을 이용해 돈 복사를 한 후, deno js sandbox 탈출
+기본적으로 hono와 deno kv 라이브러리를 이용한 간단한 상점 웹사이트인 것을 알 수 있습니다.
+
+```js
+export async function buyItem(username, item, quantity) {
+    const user = (await getUser(username)).value;
+    const store = (await getStore(username)).value;
+    const itemPrice = STORE_LIST.find((i) => i.name === item).price;
+
+    if (!store[item]) {
+        store[item] = 0;
+    }
+
+    if (user.balance < itemPrice * quantity) {
+        throw new Error("Not enough balance");
+    }
+
+    store[item] += parseInt(quantity);
+    user.balance -= itemPrice * parseInt(quantity);
+
+    await kv.set(["store", username], store);
+    await kv.set(["users", username], user);
+}
+
+export async function sellItem(username, item, quantity) {
+    const user = (await getUser(username)).value;
+    const store = (await getStore(username)).value;
+    const itemPrice = STORE_LIST.find((i) => i.name === item).price;
+
+    if (!store[item] || store[item] < quantity) {
+        throw new Error("Not enough items");
+    }
+
+    store[item] -= parseInt(quantity);
+    user.balance += itemPrice * parseInt(quantity);
+
+    await kv.set(["users", username], user);
+    await kv.set(["store", username], store);
+}
+```
+
+아이템 구매와 판매를 할 때, 먼저 user.balance를 보고 나중에 저장을 하기 때문에 매우 빠르게 구매 요청을 보내면 race condition을 통해 돈 복사가 가능합니다.
+
+```js
+app.get("/flag", async (c) => {
+    const session = c.get("session");
+    const username = session.get("username");
+
+    if (!username) {
+        return c.text("You are not logged in");
+    }
+
+    const store = await getStore(username);
+
+    if (store.value["Flag"] > 0) {
+        const flag = Deno.env.get("FLAG");
+        return c.text(flag);
+    }
+
+    return c.text("You are not authorized to view the flag");
+});
+```
+
+얼핏보면 돈을 모아 Flag 아이템을 산 뒤 `/flag`에 접근하면 플래그를 획득할 수 있는 것 처럼 보입니다.
+하지만, 도커 파일을 보면 `--deny-env=FLAG`가 걸려있어 바로 환경 변수에 접근을 하지 못하는 것을 알 수 있습니다.
+
+```js
+pp.get("/readfile", async (c) => {
+    const session = c.get("session");
+    const username = session.get("username");
+
+    const filepath = c.req.query("file");
+
+    if (!username) {
+        return c.text("You are not logged in");
+    }
+
+    if (!filepath) {
+        return c.text("Invalid file path");
+    }
+
+    const user = await getUser(username);
+    if (user.value.balance < 1000000) {
+        return c.text("Not enough balance");
+    }
+
+    const file = Deno.readTextFileSync(filepath);
+    return c.text(file);
+});
+
+```
+
+하지만, 밑에 readfile 기능이 주어졌기 때문에 이 기능으로 환경 변수를 읽을 수 있는 방법도 있다는 것을 알 수 있습니다.
+이것 또한 `--deny-read=/proc/self/environ,.env`로 막혀있으나, `/proc/self/root/app/.env` 등과 같이 sandbox를 우회하면 플래그를 읽을 수 있습니다.
+
+따라서, 최종 익스플로잇은 다음과 같습니다.
 
 ```py
 import requests
