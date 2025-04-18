@@ -12,7 +12,7 @@ pin: false
 image: /assets/img/spacewar/space_war_4.png
 ---
 
-### 목차
+## 목차
 1. RSA Private
 2. SEA
 3. Power 6

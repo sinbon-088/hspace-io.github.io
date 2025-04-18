@@ -11,7 +11,7 @@ pin: false
 image: /assets/img/spacewar/space_war_1.png
 ---
 
-### 목차
+## 목차
 
 1. 스페이스 워(Space War)?
 2. for_beginner

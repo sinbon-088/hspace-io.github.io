@@ -11,7 +11,6 @@ mermaid: false
 pin: false
 image: /assets/img/DBI/dbi_thumbnail.jpg
 ---
-# Dynamic Binary Instrumentation with Intel Pin
 
 ### 김영민(OSORI)
 

@@ -12,7 +12,7 @@ pin: false
 image: /assets/img/spacewar/space_war_2.png
 ---
 
-### 목차
+## 목차
 1. unsafe_calculator
 2. safe_calculator
 3. HSpace Satellite

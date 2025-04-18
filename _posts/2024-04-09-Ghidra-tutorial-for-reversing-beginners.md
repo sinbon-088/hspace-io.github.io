@@ -11,7 +11,7 @@ pin: false
 image: /assets/img/Ghidra-tutorial-for-reversing-beginners/ghidra_tutorial.png
 ---
 
-### 목차
+## 목차
 1. Ghidra에 대하여
 2. 배경지식
 3. 설치 방법

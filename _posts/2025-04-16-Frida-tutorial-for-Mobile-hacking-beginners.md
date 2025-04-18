@@ -9,12 +9,12 @@ comments: false
 math: true
 mermaid: false
 pin: false
-image: 
+image: /assets/img/frida_tutorial/frida_thumbnail.png
 ---
 
 ### 강지원(jiw0n)
 
-### 목차
+## 목차
 1. Frida의 개요
 2. Frida 설치
 3. FridaLab의 개요

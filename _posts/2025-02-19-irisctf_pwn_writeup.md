@@ -11,11 +11,10 @@ mermaid: false
 pin: false
 image: /assets/img/2025irisctf_pwn_wu/iris.jpg
 ---
-# 2025 irisCTF pwn writeup
 
 ### shielder(조수호)
 
-### 목차
+## 목차
 
 1. pwn / sqlate
 
