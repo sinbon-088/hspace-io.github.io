@@ -183,7 +183,7 @@ public boolean chall03() {
 ```
 하지만 chall03() 메서드는 false를 반환하기 때문에 Frida로 후킹을해서 true를 반환시켜야합니다. <br>
 위 문제는 메서드를 호출하는 것이 아닌 반환 값만 변경하는 것이기 때문에 static 메서드가 아니여도 Java.use()를 사용하여 후킹이 가능합니다. <br>
-만약 직접 메서드를 호출할 때는 Java.choose()를 사용해야한다. <br>
+만약 직접 메서드를 호출할 때는 Java.choose()를 사용해야합니다. <br>
 ```js
 Java.perform(() => {
     var challenge_03 = Java.use("uk.rossmarks.fridalab.MainActivity");
