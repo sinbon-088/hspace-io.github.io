@@ -878,7 +878,7 @@ def view(request, path: Path):
 
 `raw.githubcontent.com.cykorfighting.kro.kr`, 팀 서버 IP로 A 레코드를 생성해 진행하였다. 처음에는 문제 풀이 서버에 CNAME을 걸어 바로 접근하려고 시도했으나, Django의 `manage.py runserver`가 https를 지원하지 않기 때문에 이 방식으로는 SSRF가 불가능하다.
 
-이것을 우회하기 위해서는 서브 도메인으로 연결한 본인 웹사이트에 문제 풀어 서버의 `/admin` 엔드포인트로 redirection을 걸어주면 오류없이 정상적으로 우회가 가능하다. 
+하지만, 서브 도메인으로 연결한 본인 웹사이트에 문제 풀이 서버의 `/admin` 엔드포인트로 redirection을 걸어주면 오류 없이 정상적으로 우회가 가능하다. 
 
 ```
 raw.githubusercontent.com.cykorfighting.kro.kr {
