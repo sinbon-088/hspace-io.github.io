@@ -19,7 +19,7 @@ image: /assets/img/2024_hctf_writeup/hctf.jpg
 1. [h-babynote](#h-babynote) - pwn
 2. [h-note](#h-note) - pwn
 3. [SQL injection](#sql-injection) - pwn
-4. [Can't trust checker](#Can't-trust-checker) - rev
+4. [Can't trust checker](#Cant-trust-checker) - rev
 5. [Cespresso](#Cespresso) - rev
 6. [LetsGoMoveMove](#LetsGoMoveMove) - rev
 7. [fundamental](#fundamental) - web
@@ -160,7 +160,7 @@ void delete()
 - unsorted bin에 청크를 넣고 show를 사용하여 main_arena(->libc base)를 릭
 - tcache에 청크를 넣고 edit 기능으로 next를 strlen@plt.got-0x10으로 설정 (tcache poisoning)
 - 이후 strlen@got-0x10에 청크를 할당받아 strlen@plt.got를 system으로 overwrite
-- printf("%s", '/bin/sh')를 호출해서 쉘 획득 
+- `printf("%s", "/bin/sh")`를 호출해서 쉘 획득 
 
 이를 구현한 익스플로잇 코드는 다음과 같습니다.
 
@@ -200,7 +200,7 @@ def exploit(p):
     return
 ```
 #### h-note
-h-babynote 문제를 읽으셨다면, 해당 코드에서 delete 기능만 제거됐습니다.
+h-babynote 문제를 읽으셨다면 파악할 수 있겠지만 해당 코드에서 delete 기능만 제거됐습니다.
 
 ```c
     while (1){
@@ -567,8 +567,8 @@ p.interactive()
 
 ### Rev
 #### Can't trust checker
-C++ 형식의 바이너리이기에 분석에 유의하여야 한다.
-분석해보면 
+C++ 형식의 바이너리이기에 분석에 유의하여야 하며, 분석해보면 아래와 같은 형식으로 이루어져있습니다.
+
 ```
 1.특정한 형식의 입력받기
 2.간단한 연산 진행
@@ -576,20 +576,15 @@ C++ 형식의 바이너리이기에 분석에 유의하여야 한다.
 4.연산결과 2진수로 transform
 5.nemo logic 검증
 ```
-으로 이루어져있다.
 
-문제에서 주로 다루는 부분은 nemo logic 검증 부분으로
+문제에서 주로 다루는 부분은 nemo logic 검증 부분으로 문제 내부에 이미 nemo logic의 정답이 주어져 있습니다. 다만 이를 알아내려면 nemo logic임을 빠르게 파악하거나 검증 부분을 분석해내야 합니다. 해당 부분을 이용해서 역으로 로직을 진행해주면 됩니다.
 
-문제 내부에 이미 nemo logic의 정답이 주어져 있다.
+nemo logic 검증 부분이 굉장히 러프하게 작성되었기에 혹시 모를 중복해를 방지하기 위해 md5로 검증하는 파트가 있습니다.
 
-다만 이를 알아내려면 nemo logic임을 알거나 검증 부분을 분석해내야 한다.
+어쨌든, nemo logic의 정답을 이용해 플래그를 얻는 것이 의도된 풀이입니다. 아래는 문제 풀이 스크립트입니다.
 
-해당 부분을 이용해서 역으로 로직을 진행해주면 된다.
 
-nemo logic 검증 부분이 러프하게 작성되었기에 혹시 모를 중복해를 방지하기 위해 md5로 검증하는 파트가 있다.
-
-nemo logic의 정답을 이용해 플래그를 얻는 것이 의도된 풀이이다.
-
+##### ex.py
 ```python
 from sage.all import *
 enc=[[[0,1,0,0,0,1,0,0],
@@ -684,7 +679,8 @@ print(flag)
 ```
 
 #### Cespresso
-문제는 flag.png를 compress만 수행해놓았다. 문제 내에 decompress는 따로 구현해놓지 않았다.
+문제는 flag.png를 compress하는 기능만 수행해놓아서 문제 내에서는 decompress가 따로 구현되어있지 않습니다.
+
 ```
 realsung@DESKTOP-OFIT2BM:/mnt/c/Users/sungj/Desktop/rev-login$ ./compress
 Usage: ./compress [e/d] input_file output_file
@@ -692,8 +688,10 @@ e: encode (compress)
 d: decode (decompress)
 ```
 
-입력된 파일의 3바이트를 24비트 정수로 변환 이를 6비트씩 4개 블록으로 분할하고 저장한다. 즉, 3:4 변환 비율 (33% 크기 증가) 하는 방식이다.
-decrypt는 다음과 같이 수행하면 된다.
+compress 로직을 분석해보면, 입력된 파일의 3바이트를 24비트 정수로 변환하고 이를 6비트씩 4개 블록으로 분할하고 저장합니다. 즉, 3:4 변환 비율로 (33% 크기 증가) compress 하는 방식입니다.
+때문에 단순히 이를 역으로 변환해주면 됩니다. 아래는 풀이를 진행하는 decrypt 스크립트입니다.
+
+##### ex.c
 ```c
 void decode_block(unsigned char *in, unsigned char *out) {
     unsigned char vals[4];
@@ -714,7 +712,10 @@ void decode_block(unsigned char *in, unsigned char *out) {
 ```
 
 #### LetsGoMoveMove
-move disassembler 을 사용해 Checker.mv 파일의 디스어셈블을 확인할 수 있다. opcode 가 직관적이여서 대체로 코드르 이해하기가 수월함을 알 수 있다.
+Blockchain에서 사용되는 Move VM을 사용하는 문제입니다.
+move disassembler을 사용해 Checker.mv 파일의 disassemble 결과를 확인할 수 있습니다. opcode가 직관적이여서 대체로 코드를 이해하기 어렵지 않습니다.
+
+아래는 disassemble 결과와 로직 분석입니다.
 
 ```rs
 public main(Arg0: vector<u8>): vector<u8> /* def_idx: 1 */ {
@@ -723,97 +724,101 @@ L2:	loc1: u64
 L3:	loc2: vector<u8>
 L4:	loc3: u64
 ...
-	2: ImmBorrowLoc[0](Arg0: vector<u8>)
-	3: VecLen(1)
-	4: LdU64(32)
-	5: Neq
-	6: BrFalse(9)
+    2: ImmBorrowLoc[0](Arg0: vector<u8>)
+    3: VecLen(1)
+    4: LdU64(32)
+    5: Neq
+    6: BrFalse(9)
 B1:
-	7: LdConst[1](Vector(U8): [5, 119, 114, 111, 110, 103])
-	8: Ret
+    7: LdConst[1](Vector(U8): [5, 119, 114, 111, 110, 103])
+    8: Ret
 ```
-1. main 함수에서 Arg0 을 받아서 32 바이트인지 확인하고, 32 바이트가 아니면 wrong을 리턴한다.
+1. main 함수에서 Arg0 을 받아서 32bytes인지 확인하고, 32bytes가 아니면 wrong을 반환합니다.
 
 ```rs
-	0: LdConst[0](Vector(U8): [32, 238, 226, 220, 229, 214, 183, 183, 188, 189, 188, 187, 186, 189, 189, 186, 186, 229, 183, 188, 228, 186, 189, 186, 228, 227, 186, 188, 228, 189, 188, 182, 209])
-	1: StLoc[3](loc2: vector<u8>)
-	2: ImmBorrowLoc[0](Arg0: vector<u8>)
+    0: LdConst[0](Vector(U8): [32, 238, 226, 220, 229, 214, 183, 183, 188, 189, 188, 187, 186, 189, 189, 186, 186, 229, 183, 188, 228, 186, 189, 186, 228, 227, 186, 188, 228, 189, 188, 182, 209])
+    1: StLoc[3](loc2: vector<u8>)
+    2: ImmBorrowLoc[0](Arg0: vector<u8>)
 ...
 B2:
-	9: LdU64(0)
-	10: StLoc[4](loc3: u64)
-	11: LdFalse
-	12: StLoc[1](loc0: bool)
-	13: ImmBorrowLoc[0](Arg0: vector<u8>)
-	14: VecLen(1)
-	15: StLoc[2](loc1: u64)
+    9: LdU64(0)
+    10: StLoc[4](loc3: u64)
+    11: LdFalse
+    12: StLoc[1](loc0: bool)
+    13: ImmBorrowLoc[0](Arg0: vector<u8>)
+    14: VecLen(1)
+    15: StLoc[2](loc1: u64)
 B3:
-	16: CopyLoc[1](loc0: bool)
-	17: BrFalse(23)
+    16: CopyLoc[1](loc0: bool)
+    17: BrFalse(23)
 B4:
-	18: MoveLoc[4](loc3: u64)
-	19: LdU64(1)
-	20: Add
-	21: StLoc[4](loc3: u64)
-	22: Branch(25)
+    18: MoveLoc[4](loc3: u64)
+    19: LdU64(1)
+    20: Add
+    21: StLoc[4](loc3: u64)
+    22: Branch(25)
 B5:
-	23: LdTrue
-	24: StLoc[1](loc0: bool)
+    23: LdTrue
+    24: StLoc[1](loc0: bool)
 B6:
-	25: CopyLoc[4](loc3: u64)
-	26: CopyLoc[2](loc1: u64)
-	27: Lt
-	28: BrFalse(44)
+    25: CopyLoc[4](loc3: u64)
+    26: CopyLoc[2](loc1: u64)
+    27: Lt
+    28: BrFalse(44)
 B7:
-	29: ImmBorrowLoc[0](Arg0: vector<u8>)
-	30: CopyLoc[4](loc3: u64)
-	31: VecImmBorrow(1)
-	32: ReadRef
-	33: CastU16
-	34: Call enc(u16): u8
-	35: ImmBorrowLoc[3](loc2: vector<u8>)
-	36: CopyLoc[4](loc3: u64)
-	37: VecImmBorrow(1)
-	38: ReadRef
-	39: Neq
-	40: BrFalse(43)
+    29: ImmBorrowLoc[0](Arg0: vector<u8>)
+    30: CopyLoc[4](loc3: u64)
+    31: VecImmBorrow(1)
+    32: ReadRef
+    33: CastU16
+    34: Call enc(u16): u8
+    35: ImmBorrowLoc[3](loc2: vector<u8>)
+    36: CopyLoc[4](loc3: u64)
+    37: VecImmBorrow(1)
+    38: ReadRef
+    39: Neq
+    40: BrFalse(43)
 ```
-2. 백터값을 하나씩 가져와 enc 함수를 호출하고, loc2 에 위치한 백터와 하나씩 비교한다. 만약 다르면 wrong을 리턴한다.
+2. 백터값을 하나씩 가져와 enc 함수를 호출하고, loc2 에 위치한 백터와 하나씩 비교합니다. 만약 값이 다르면 wrong을 반환합니다.
 
 ```rs
-	45: Call aptos_hash::keccak256(vector<u8>): vector<u8>
-	46: LdConst[2](Vector(U8): [32, 238, 173, 186, 176, 150, 6, 212, 172, 35, 208, 24, 89, 94, 78, 190, 154, 132, 237, 193, 118, 237, 159, 181, 152, 229, 5, 174, 71, 70, 125, 134, 153])
-	47: Eq
-	48: BrFalse(51)
+    45: Call aptos_hash::keccak256(vector<u8>): vector<u8>
+    46: LdConst[2](Vector(U8): [32, 238, 173, 186, 176, 150, 6, 212, 172, 35, 208, 24, 89, 94, 78, 190, 154, 132, 237, 193, 118, 237, 159, 181, 152, 229, 5, 174, 71, 70, 125, 134, 153])
+    47: Eq
+    48: BrFalse(51)
 ```
-3. keccak256 해서 입력값이 특정 해쉬와 맞는지 체크하고, 다르면 wrong을 리턴한다. 해시를 제공하는 이유는 입력값이 여러개가 나올 수 있기 때문이다.
+3. keccak256해시를 진행해서 입력값이 특정 해쉬와 맞는지 체크하고, 다르면 wrong을 반환합니다. 해시를 제공하는 이유는 중복해가 발생할 수 있기 때문입니다.
 
 ```rs
 enc(Arg0: u16): u8 /* def_idx: 0 */ {
 B0:
-	0: CopyLoc[0](Arg0: u16)
-	1: LdU16(240)
-	2: Add
-	3: CopyLoc[0](Arg0: u16)
-	4: LdU16(2)
-	5: BitOr
-	6: CopyLoc[0](Arg0: u16)
-	7: LdU8(1)
-	8: Shr
-	9: Xor
-	10: Xor
-	11: MoveLoc[0](Arg0: u16)
-	12: LdU16(128)
-	13: Add
-	14: Xor
-	15: LdU16(255)
-	16: BitAnd
-	17: CastU8
-	18: Ret
+    0: CopyLoc[0](Arg0: u16)
+    1: LdU16(240)
+    2: Add
+    3: CopyLoc[0](Arg0: u16)
+    4: LdU16(2)
+    5: BitOr
+    6: CopyLoc[0](Arg0: u16)
+    7: LdU8(1)
+    8: Shr
+    9: Xor
+    10: Xor
+    11: MoveLoc[0](Arg0: u16)
+    12: LdU16(128)
+    13: Add
+    14: Xor
+    15: LdU16(255)
+    16: BitAnd
+    17: CastU8
+    18: Ret
 }
 ```
-enc 함수는 u16 으로 캐스팅 된 바이트를 맏아서 위와 같은 연산을 수행 후 리턴하는데, 파이썬으로 구현하면 다음과 같다. `(((inp + 0xf0) ^ ((inp|0x2) ^ inp>>1) ^ (inp+0x80))&0xff)`.
- 이 연산은 역산이 불가능하고 1,2 번째 비트가 손실되기 때문에 여러개의 입력값이 나올 수 있다.
+enc 함수는 u16 으로 캐스팅 된 bytes를 받아서 위와 같은 연산을 수행 후 반환하는데, 파이썬으로 구현하면 아래와 같습니다. 
+
+```py
+(((inp + 0xf0) ^ ((inp|0x2) ^ inp>>1) ^ (inp+0x80))&0xff)
+```
+이 연산은 역산이 불가능하고 1,2번째 bit가 손실되기 때문에 중복해가 발생할 수 있는 것입니다.
 
 ```python
 def enc(inp):
@@ -828,7 +833,7 @@ for i in range(32):
             flags[i].append(chr(j))
     print('')
 ```
-위와같은 코드로 테스트해보면, 각 글자별로 두개의 경우의 수가 나오는데 약 2**32 의 경우의 수가 나온다.
+위 스크립트로 테스트해보면, 각 글자별로 두개의 경우의 수가 나오는데 전체적으로 대략 2**32 의 경우의 수가 발생합니다.
 
 ```rs
 i: 0 |  h, k,
@@ -864,8 +869,9 @@ i: 29 |  4, 7,
 i: 30 |  8, ;,
 i: 31 |  }, ~,
 ```
-하지만 출력값을 확인해보면, 플래그가 16진수로 되어있음을 짐작할 수 있고, 경우의 수 2**20 으로 줄어든다. BFS 코드로 몇 초만에 플래그를 찾을 수 있다. 다음은 솔브코드이다.
+그러나 출력값을 확인해보면, 플래그가 16진수로 되어있음을 얼추 짐작할 수 있고, 경우의 수는 2**20으로 줄어듭니다. 크게 어려운 점 없이 BFS 알고리즘을 통한 스크립트로 몇 초만에 플래그를 찾을 수 있습니다. 아래는 문제 풀이 스크립트 입니다.
 
+##### ex.py
 ```python
 from Crypto.Hash import keccak
 import time
@@ -902,7 +908,9 @@ bfs(list("hctf{"))
 
 ### Web
 #### fundamental
-직접 코딩해준 mysql 기반의 세션 핸들러를 php session handler로 사용하고 있습니다. session write (값 입력) 시 serialization된 값이 db에 저장되게 되는데, $value에 대한 필터링 및 검증이 없기 때문에 session의 key-value를 지정하는 과정에서 session write함수가 호출되므로, in-direct하게 SQL Injection이 발생하게 됩니다. 특별히 에러가 출력되거나, update문에서 취약점이 발생하기 때문에 값을 확인할 수 있는 방법이 없습니다. 따라서, Side channel attack을 해야하는데, 이 경우 time based sql injection이 가능합니다.
+직접 코딩해준 mysql 기반의 세션 핸들러를 php session handler로 사용하고 있습니다. session write (값 입력) 시 serialization된 값이 db에 저장되게 되는데, $value에 대한 필터링 및 검증이 없기 때문에 session의 key-value를 지정하는 과정에서 session write함수가 호출되므로, in-direct하게 SQL Injection이 발생하게 됩니다. 
+
+특별히 에러가 출력되거나, update문에서 취약점이 발생하기 때문에 값을 확인할 수 있는 방법이 없습니다. 따라서, Side channel attack을 해야하는데, 이 경우 time based sql injection이 가능합니다.
 
 ##### ex.py
 ```py
@@ -1026,14 +1034,32 @@ asdf
 ### Crypto
 #### atko
 
-https://trust.okta.com/security-advisories/okta-ad-ldap-delegated-authentication-username/
+이 문제의 이름은 okta에서 착안하였습니다. [이 문서](https://trust.okta.com/security-advisories/okta-ad-ldap-delegated-authentication-username/)는 okta의 보안 권고에서 파생된 취약점 분석입니다.
 
-```py
+```python
 def gen_cache_key(user_id, username, password, salt):
     return bcrypt.hashpw(user_id + username + password, salt)
 ```
 
-one of the user id is always length 39. user_id length is 32. bcrypt length limit: 72. so 72 - 32 - 39 = 1. Password will be truncated after single hex character. Brute force 4 bit of password prefix to login and read memo.
+이 함수는 `user_id`, `username`, `password`를 이어 붙여 bcrypt 해시 키를 생성합니다.  
+하지만 다음과 같은 제약 조건이 존재합니다.
+
+- 한 사용자 계정의 `username` 길이는 **항상 39바이트**입니다.
+- `user_id`는 **32바이트**로 고정되어 있습니다.
+- bcrypt는 입력 문자열의 최대 길이가 **72바이트**로 제한됩니다.
+
+따라서 아래와 같이 계산할 수 있습니다.
+
+```
+72 - 32(user_id) - 39(username) = 1
+```
+
+즉, password의 **선두 1바이트(2 hex digit)만 유효하고**, 나머지는 무시됩니다. 이로 인해 bcrypt 입력 값은 password 전체가 아닌 **첫 1바이트(8비트)**만 반영되며, 그 결과 캐시 키 생성 시 password가 사실상 **4비트만 brute-force 하면** 인증 우회가 가능해집니다.
+
+이를 악용하면,
+
+- 해당 username에 대해 password prefix를 16가지 경우의 수로 브루트포스하고,
+- 성공 시 로그인 및 메모(memo) 데이터 접근이 가능하게 됩니다.
 
 ##### ex.py
 ```python
@@ -1249,7 +1275,9 @@ io.interactive()
 
 #### ff
 
-fermat factorization implementation is given, when approximate ratio of primes are known. https://en.wikipedia.org/wiki/Fermat%27s_factorization_method#Multiplier_improvement. Our goal is to generate a weak public RSA modulus which makes the attack script factor in 0x1337 iterations. Iteration complexity: https://eprint.iacr.org/2009/318.pdf so make prime difference larger enough to iterate. Brute force several minutes to find a desired pair.
+Fermat 소인수분해 기법은 두 소수의 차이가 작을 경우, RSA 모듈러스 $N = p \times q$를 빠르게 분해할 수 있는 고전적인 알고리즘입니다. 이 기법은 특히 $p \approx q$일 때 효과적이며, 개선된 버전은 known ratio 정보를 활용해 multiplier를 조정하는 방식으로도 사용됩니다. 관련 내용은 [이 문서](https://en.wikipedia.org/wiki/Fermat%27s_factorization_method#Multiplier_improvement)에서 확인할 수 있습니다
+
+**ff** 문제의 풀이 목표는 이 기법으로 정확히 `0x1337`번의 반복(iteration) 끝에 소인수분해가 가능한 **약한 RSA 모듈러스**를 생성하는 것입니다. 반복 횟수는 두 소수 간의 차이에 비례하므로, 적절히 큰 차이를 갖는 $(p, q)$ 쌍을 brute-force 방식으로 찾아야 합니다. 반복 횟수의 이론적 복잡도에 대해서는 [이 논문](https://eprint.iacr.org/2009/318.pdf)을 참고해주세요.
 
 ##### ex.py
 ```python
