@@ -9,7 +9,7 @@ comments: false
 math: true
 mermaid: false
 pin: false
-image: /assets/img/Game-Hacking-Pwn-Adventure-3/game_hacking_pwn_adventure3_thumbnali.png
+image: /assets/img/Game-Hacking-Pwn-Adventure-3/thumbnail.png
 ---
 
 <style type="text/css">
