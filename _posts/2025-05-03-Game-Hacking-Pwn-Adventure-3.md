@@ -252,8 +252,8 @@ health는 Player 구조체에서 0x30의 offset에 위치합니다. 따라서 ma
 
 **코드 패치**
 
-실행 파일의 어셈블리 코드는 기계어 명령어와 1:1로 대응합니다. 따라서 어셈블리 코드를 패치하면, 사용자가 원하는 대로 프로그램의 동작 흐름을 직접 조작할 수 있습니다.
-예를 들어서, 다음처럼 마나를 사용할 때, 소비된 mana만큼 캐릭터의 mana를 빼주는 작업을 진행하는 코드가 있습니다.
+실행 파일의 어셈블리 코드는 기계어 명령어와 1:1로 대응합니다. 따라서 어셈블리 코드를 패치하면, 사용자가 프로그램의 동작 흐름을 직접 조작할 수 있습니다.
+예를 들어서, 다음처럼 마나를 사용할 때, 소비된 mana만큼 캐릭터의 mana를 감소시켜주는 역할을 하는 코드가 있습니다.
 
 ```cpp
 char __thiscall Player::UseMana(Player *this, int mana)
@@ -341,7 +341,7 @@ Cheat Engine의 Pointer Scan 기능을 이용해서 찾아보겠습니다.
 
 **[Challenge] Until the Cows Come Home (100 Points)**
 
-다음 NPC에게 말을 걸면 퀘스트를 받을 수 있습니다. 퀘스트의 내용은 자신의 소가 텔레포트했고, 찾아달라는 것입니다. 문제는 해당 소의 위치가 평범한 방법으로는 갈 수 없다는 점입니다.
+다음 NPC에게 말을 걸면 퀘스트를 받을 수 있습니다. 퀘스트는 자신의 소가 어딘가로 텔레포트해서 찾아달라는 것입니다. 문제는 그 소가 위치한 곳에 평범한 방법으로는 갈 수 없다는 점입니다.
 
 ![image.png](/assets/img/Game-Hacking-Pwn-Adventure-3/image%2014.png){: .c-img-resize-80}
 
@@ -442,7 +442,7 @@ IFastTravel *__thiscall Player::GetFastTravelDestinations(Player *this, const ch
 후킹(hooking)은 프로세스의 함수 호출, 메시지, 이벤트 등을 가로채서 원래 동작을 바꾸거나 추가적인 기능을 삽입하는 기술입니다. 게임 해킹에서는 이 기법을 통해 게임의 핵심 함수나 데이터 흐름에 개입하여 치트 기능을 구현하거나, 게임의 동작을 실시간으로 조작할 수 있습니다. 
 
 가장 일반적인 후킹으로는 함수 후킹이 있는데 게임 내에서 특정 함수를 호출할 때, 그 호출을 가로채서 임의로 만든 코드가 먼저 실행되도록 유도할 수 있습니다. 
-예를 들어, 플레이어의 체력을 감소시키는 함수가 호출될 때 이 함수를 후킹하면, 체력 감소를 막거나 오히려 체력을 증가시키는 동작을 삽입하도록 할 수 있습니다.
+예를 들어, 플레이어의 체력을 감소시키는 함수를 후킹하면, 체력 감소를 막거나 오히려 체력을 증가시키는 동작을 삽입하도록 할 수 있습니다.
 
 ![Function Hooking](/assets/img/Game-Hacking-Pwn-Adventure-3/image%2022.png){: .c-img-resize-80}
 *Function Hooking*
@@ -457,7 +457,7 @@ IFastTravel *__thiscall Player::GetFastTravelDestinations(Player *this, const ch
 1. Fly hack
     - F1 key를 눌러서 Fly hack 활성화/비활성화 토글
 2. Speed hack
-    - F2 key를 Speed hack 활성화/비활성화 토글
+    - F2 key를 눌러서 Speed hack 활성화/비활성화 토글
 3. Teleport
     - 인게임 내의 chat 기능을 후킹하여 Teleport 명령어를 사용할 수 있도록 기능 구현
     - ex) `!tp 300 400 1000` → `X: 300 Y: 400 Z: 1000` 좌표로 이동
@@ -477,7 +477,7 @@ GameAPI = gamelogic + 0x97D80;
 본격적으로 게임 핵을 제작해보도록 하겠습니다.
 
 먼저 Fly hack 입니다. 
-게임을 분석해보면 `Player::CanJump`라는 함수가 존재합니다. 이는 플레이어의 객체의 매 tick마다 호출되는 함수인데 플레이어가 바닥에 닿지 않았을 경우 `Player::CanJump` 함수에서는 False를 호출하여 점프가 불가능하게 구현되었습니다.
+게임을 분석해보면 `Player::CanJump`라는 함수가 존재합니다. 이는 플레이어의 객체의 매 tick마다 호출되는 함수인데 플레이어가 바닥에 닿지 않았을 경우 `Player::CanJump` 함수에서는 False를 반환하여 점프가 불가능하게 구현되었습니다.
 
 ```cpp
 bool __thiscall Player::CanJump(Player *this)
@@ -689,7 +689,7 @@ Unbearable Woods 맵을 돌아다니면 보물상자를 발견할 수 있는데 
 
 ![bear2.webp](/assets/img/Game-Hacking-Pwn-Adventure-3/bear2.webp){: .c-img-resize-80}
 
-따라서 나무 위로 올라가는 방법은 사용할 수 없습니다. 그러면 나무 오브젝트 안으로 들어가면 어떨까요? 곰의 객체와 플레이어의 객체사이에 나무 객체가 있기 때문에 곰의 사격 범위가 아니라고 판단하고 계속 모이기만 할 겁니다. 일반적으로 나무 안에 들어갈 수 없기 때문에 텔레포트를 이용해서 나무 안의 좌표로 이동하겠습니다.
+따라서 나무 위로 올라가는 방법은 사용할 수 없습니다. 그러면 나무의 객체 안으로 들어가면 어떨까요? 곰의 객체와 플레이어의 객체사이에 나무 객체가 있기 때문에 곰의 사격 범위가 아니라고 판단하고 계속 모이기만 할 겁니다. 일반적으로 나무 안에 들어갈 수 없기 때문에 텔레포트를 이용해서 나무 안의 좌표로 이동하겠습니다.
 
 텔레포트 역시 금방 제작했던 DLL을 인젝션해서 채팅 텔레포트를 활성화시킬 수 있습니다.
 
@@ -698,7 +698,7 @@ Unbearable Woods 맵을 돌아다니면 보물상자를 발견할 수 있는데 
 ![Quest: Unbearable Revenge](/assets/img/Game-Hacking-Pwn-Adventure-3/bear.webp){: .c-img-resize-80}
 *Quest: Unbearable Revenge*
 
-이후 보물상자를 통해 flag를 얻었습니다.
+이후 보물상자를 통해 flag를 얻었습니다.  
 ![Get Flag](/assets/img/Game-Hacking-Pwn-Adventure-3/bear_flag.png){: .c-img-resize-60}
 *Get Flag*
 
@@ -737,18 +737,18 @@ Pwn Adventure 3에서 온라인 접속을 하고 Wireshark를 통해 패킷을 �
 
 **[MOVE]**
 
-6d76<span class='red'>432351c6d070</span>cdc567120e4529de34f9000000<span class='red'>7f</span>
-6d76<span class='red'>f71b51c6ab19</span>cdc567120e4529de34f9000000<span class='green'>7f</span>
-6d76<span class='red'>201451c6c9bbcc</span>c567120e4529de34f9000000<span class='red'>00</span>
-6d76<span class='red'>d11351c627b8cc</span>c567120e4529de34f9000000<span class='green'>00</span>
+6d76<span class='red'>432351c6d070</span>cdc567120e4529de34f9000000<span class='red'>7f</span>  
+6d76<span class='red'>f71b51c6ab19</span>cdc567120e4529de34f9000000<span class='green'>7f</span>  
+6d76<span class='red'>201451c6c9bbcc</span>c567120e4529de34f9000000<span class='red'>00</span>  
+6d76<span class='red'>d11351c627b8cc</span>c567120e4529de34f9000000<span class='green'>00</span>  
 
 **[TRANSITION]**
 
-6d76<span class='green'>d11351c627b8cc</span>c567120e45<span class='red'>85dfcefc</span>000000<span class='green'>00</span>
-6d76<span class='green'>d11351c627b8cc</span>c567120e45<span class='red'>17e042ff</span>000000<span class='green'>00</span>
-6d76<span class='green'>d11351c627b8cc</span>c567120e45<span class='red'>27e1d704</span>000000<span class='green'>00</span>
-6d76<span class='green'>d11351c627b8cc</span>c567120e45<span class='red'>27e19b05</span>000000<span class='green'>00</span>
-6d76<span class='green'>d11351c627b8cc</span>c567120e45<span class='red'>27e1ee05</span>000000<span class='green'>00</span>
+6d76<span class='green'>d11351c627b8cc</span>c567120e45<span class='red'>85dfcefc</span>000000<span class='green'>00</span>  
+6d76<span class='green'>d11351c627b8cc</span>c567120e45<span class='red'>17e042ff</span>000000<span class='green'>00</span>  
+6d76<span class='green'>d11351c627b8cc</span>c567120e45<span class='red'>27e1d704</span>000000<span class='green'>00</span>  
+6d76<span class='green'>d11351c627b8cc</span>c567120e45<span class='red'>27e19b05</span>000000<span class='green'>00</span>  
+6d76<span class='green'>d11351c627b8cc</span>c567120e45<span class='red'>27e1ee05</span>000000<span class='green'>00</span>  
 
 1. 앞의 2바이트는 0x6d 0x76으로 고정되어 있습니다. 아마 패킷의 identifier일 것 같습니다.
 2. 플레이어 이동 시 identifier 이후 7바이트가 바뀐 것을 볼 수 있습니다. 그리고 마지막 1바이트가 바뀌었습니다.
@@ -764,7 +764,7 @@ Pwn Adventure 3에서 온라인 접속을 하고 Wireshark를 통해 패킷을 �
 
 0x6a 0x70 패킷이 2번 발생하고, 다시 0x6d 0x76 패킷에서 정확하게 z 패킷 4바이트만 바뀌는 것을 확인할 수 있습니다.
 
-그렇기 때문에 x, y, z를 모두 4바이트라고 가정하면 총 12바이트이고, 3번의 화면 전환 시 고정되는 14바이트까지가 **identifier + [x, y, z]**일 것이라고 생각할 수 있습니다.
+그렇기 때문에 x, y, z를 모두 4바이트라고 가정하면 총 12바이트이고, 3번의 화면 전환 시 고정되는 14바이트까지가 **identifier + [x, y, z]**일 것이라고 추측할 수 있습니다.
 
 마지막 1바이트는 왼쪽, 오른쪽 방향키를 누를 때마다 바뀌는 것을 확인할 수 있었습니다. 또한, 위, 아래 방향키를 누르면 마지막 2바이트가 바뀌는 것도 확인할 수 있었습니다. 키가 눌리지 않았다면 0000으로 고정됩니다.
 
@@ -807,7 +807,7 @@ Wireshark에서는 서버와 주고받는 패킷을 캡처할 수 있지만, 변
 
 ![image.png](/assets/img/Game-Hacking-Pwn-Adventure-3/image%2032.png)
 
-따라서 클라이언트에서는 도메인 → WSL의 IP주소를 통해 도커 내부 서버에 접근합니다.
+따라서 클라이언트에서는 도메인 → WSL의 IP주소를 통해 도커 내부 서버에 접근합니다.  
 master 서버는 그대로 두고, game 서버 도메인에 윈도우 로컬 IP인 `127.0.1.1`로 매핑 후, 
 `Client` ↔ `Proxy` ↔ `Server`의 흐름으로 패킷을 받고 전송해 보겠습니다.
 
@@ -1040,7 +1040,7 @@ X: <span class='red'>C6C3AA00</span>, Y: <span class='blue'>468D4A00</span>, Z: 
 
 한 번 해당 좌표에 가서 GoldenEgg1을 얻은 뒤, 서버에서 클라이언트로 전송하는 패킷을 살펴보겠습니다.
 
-GoldenEgg1을 줍는 순간 다음 패킷이 발생했습니다. 아마 클라이언트에서 보낸 패킷을 서버가 받고, 응답 패킷을 클라이언트에게 다시 줌으로써, GoldenEgg1을 얻었습니다.
+GoldenEgg1을 줍는 순간 다음 패킷이 발생했습니다. 클라이언트에서 보낸 패킷을 서버가 받고, 응답 패킷을 클라이언트에게 다시 줌으로써, GoldenEgg1을 얻었습니다.
 아마 응답 패킷은 플레이어의 상태 및 인벤토리 업데이트이므로 분석할 필요는 없을 것 같습니다.
 
 ![Received Packet](/assets/img/Game-Hacking-Pwn-Adventure-3/image%2040.png)
@@ -1050,10 +1050,10 @@ GoldenEgg1을 줍는 순간 다음 패킷이 발생했습니다. 아마 클라�
 
 요청 패킷은 2개로 나눌 수 있습니다.
 
-65650b000000
+**65650b000000**  
 해당 패킷은 6565(ee)라는 Identifier를 가지고 있고, 다음 4바이트는 상호작용한 객체의 ID입니다. mk 패킷을 분석할 때, GoldenEgg1의 ID는 0xb인 것을 확인했고, 패킷과 동일합니다.
 
-6d76bb15c4c60c6b8d4618aa90432edb2ff500000000
+**6d76bb15c4c60c6b8d4618aa90432edb2ff500000000**  
 해당 패킷은 6d76(mv)라는 Identifier를 가지고 있고, 이는 초반에 분석했던 Player의 현재 postion값을 서버에 보내는 패킷입니다.
 
 Egg와 상호작용하는 패킷을 서버에서 검사할 때, Player의 위치를 검사하기 때문에 먼저 Player의 위치를 스푸핑하고, ee패킷을 통해 상호작용하는 패킷을 보내면 Egg를 얻을 수 있습니다.
@@ -1094,10 +1094,10 @@ Town 근처에 있는 동굴에 들어가면 Blocky’s Revenge Quest가 활성�
 
 30310600537461676531<span class='red'>01000000</span>6d76b52451c60a82cdc567120e45<span class='red'>62db75f4</span>00000000
 
-이전 문제에서 패킷을 분석해봤으니 어느정도 익숙해졌습니다. 3031(01) 패킷 뒤에는 Player의 position을 체크하는 6d76(mv) 패킷입니다. 해당 패킷에서 플레이어의 위치를 검증하지는 않았기 때문에 01패킷만 분석해보겠습니다.
+이전 문제에서 패킷을 분석해봤으니 어느정도 익숙해졌습니다. 3031(01) 패킷 뒤에는 Player의 position을 체크하는 6d76(mv) 패킷입니다. 해당 패킷에서 플레이어의 위치를 검증하지는 않았기 때문에 01 패킷만 분석해보겠습니다.
 
 한 번 클라이언트 코드를 통해 패킷을 어떻게 구성하는지 확인해보겠습니다.
-`GameServerConnection::SetCircuitInputs` 함수를 살펴보면 3031(01) 패킷의 구성을 알 수 있습니다.
+`GameServerConnection::SetCircuitInputs` 함수를 살펴보면 01 패킷의 구성을 알 수 있습니다.
 
 ![GameServerConnection::SetCircuitInputs](/assets/img/Game-Hacking-Pwn-Adventure-3/image%2044.png){: .c-img-resize-60}
 *GameServerConnection::SetCircuitInputs*
@@ -1105,7 +1105,7 @@ Town 근처에 있는 동굴에 들어가면 Blocky’s Revenge Quest가 활성�
 요청 패킷 자체는 엄청 간단했습니다.
 
 ![10(3031) Packet](/assets/img/Game-Hacking-Pwn-Adventure-3/image%2045.png){: .c-img-resize-60}
-*10(3031) Packet*
+*3031(10) Packet*
 
 응답 패킷으로는 요청 패킷에 5바이트가 더해져서 옵니다. 아직까지는 무슨 데이터인지 모르니 넘어가도록 하겠습니다.
 
@@ -1115,7 +1115,7 @@ Town 근처에 있는 동굴에 들어가면 Blocky’s Revenge Quest가 활성�
 *Stage1*
 
 ON: 01000000 / 응답: 0300040000  
-OFF: 00000000 / 응답: 0300030000 → Clear
+<span class='red'>OFF: 00000000 / 응답: 0300030000 → Clear</span>  
 
 ![Stage2](/assets/img/Game-Hacking-Pwn-Adventure-3/image%2047.png){: .c-img-resize-80}
 *Stage2*
@@ -1123,12 +1123,12 @@ OFF: 00000000 / 응답: 0300030000 → Clear
 모두 OFF: 00000000 / 응답: 0400000000  
 오른쪽만 ON: 01000000 / 응답: 0400040000  
 왼쪽만 ON: 02000000 / 응답: 0400080000  
-모두 ON: 03000000 / 응답: 04000F0000 → Clear
+<span class='red'>모두 ON: 03000000 / 응답: 04000F0000 → Clear</span>  
 
 ![Stage3](/assets/img/Game-Hacking-Pwn-Adventure-3/image%2048.png){: .c-img-resize-80}
 *Stage3*
 
-모두 OFF: 00000000 / 응답: 0600030000 → Clear  
+<span class='red'>모두 OFF: 00000000 / 응답: 0600030000 → Clear</span>  
 오른쪽만 OFF: 06000000 / 응답: 0600340000  
 오른쪽만 ON: 01000000 / 응답: 06000C0000  
 가운데만 OFF: 05000000 / 응답: 06002C0000  
@@ -1144,7 +1144,7 @@ OFF: 00000000 / 응답: 0300030000 → Clear
 오른쪽만 OFF: 06000000 / 응답: 0800b40000  
 오른쪽만 ON: 01000000 / 응답: 08004C0000  
 가운데만 OFF: 05000000 / 응답: 08008C0000  
-가운데만 ON: 02000000 / 응답: 0800770000 → Clear  
+<span class='red'>가운데만 ON: 02000000 / 응답: 0800770000 → Clear</span>  
 왼쪽만 OFF: 03000000 / 응답: 0800580000  
 왼쪽만 ON: 04000000 / 응답: 0800A00000  
 모두 ON: 07000000 / 응답: 0800980000  
@@ -1158,9 +1158,9 @@ OFF: 00000000 / 응답: 0300030000 → Clear
 
 맨 왼쪽 스위치를 ON했을 경우 다음과 같은 패킷이 오고갑니다.
 
-요청: 00000080
+**요청: 00000080**
 
-응답: ae00fc5b0001970b74b95c2e0074c0805348b5cde6bbfd2e0000
+**응답: ae00fc5b0001970b74b95c2e0074c0805348b5cde6bbfd2e0000**
 
 Stage1~4에서는 응답으로 요청 패킷 + 5바이트였지만, FinalStage에서는 요청 패킷 + 26바이트가 오게 됩니다.
 
@@ -1210,7 +1210,7 @@ Final Stage = `AE00`
 output은 방 전체에 있는 스위치들의 on/off 여부에 bit 집합으로 되어 있었습니다. 상위비트쪽으로 갈 수록 목적지의 스위치이고, 하위비트쪽으로 갈 수록 출발지의 스위치였습니다.  
 ex) (목적지) 000010101 ….. 010100100 (출발지)
 
-이론상 32개의 input이기 때문에 최대 2^32번의 브투트포싱을 통해 문제를 해결할 수 있지만, 네트워크 패킷으로 전송하기 때문에 시간이 많이 걸립니다. (또, sleep(0.4)를 걸어주지 않으면 패킷이 손실이 발생합니다)
+이론상 32개의 input이기 때문에 최대 2^32번의 브투트포싱을 통해 문제를 해결할 수 있지만, 네트워크 패킷으로 전송하기 때문에 시간이 많이 걸립니다. (또, sleep(0.4)를 걸어주지 않으면 패킷 손실이 발생합니다)
 
 그렇지만 회로를 살짝 분석해보면 경우의 수를 2^16번으로 줄일 수 있습니다. 회로의 input과 output을 수집하면 output에서 특정 스위치(bit)는 반드시 0이여야 한다는 특징을 발견할 수 있습니다. (119, 96, 14, 123, 128, 140, 136, 148, 145, 158, 154, 167, 163, 160, 173)
 
@@ -1410,7 +1410,7 @@ void __userpurge Magmarok::Tick(Magmarok *this@<ecx>, float a2@<xmm14>, float de
 	  }
 ```
 
-그렇다면 체력이 5000보다 떨어졌을 경우, Healing 모션을 취하는 5초동안 FireDamage를 통해 회복을 시켜서 체력을 5026이상으로 만들면 보스의 체력은 10001이 됩니다. 그렇다면 아까 말했던 Integer Overflow 취약점을 통해 보스를 공략할 수 있습니다.
+그렇다면 체력이 5000보다 떨어졌을 때, Healing 모션을 취하는 5초동안 FireDamage를 통해 회복을 시켜서 체력을 5026이상으로 만들면 보스의 체력은 10001이 됩니다. 그렇다면 아까 말했던 Integer Overflow 취약점을 통해 보스를 공략할 수 있습니다.
 
 ![Quest: Fire and Ice: magmarok](/assets/img/Game-Hacking-Pwn-Adventure-3/magmarok2.webp){: .c-img-resize-80}
 *Quest: Fire and Ice: magmarok*
@@ -1483,7 +1483,7 @@ void __thiscall Player::PerformSubmitDLCKey(Player *this, const std::string *key
 }
 ```
 
-`KeyVerifier::VerifyKey` 함수를 보면 다음과 같이 괴랄한 코드를 확인할 수 있지만, 중간중간 검증 로직이 보입니다. 한 번 제대로 분석해서 keygen을 만들어 보겠습니다.
+`KeyVerifier::VerifyKey` 함수를 보면 다음과 같이 괴랄한 코드를 확인할 수 있지만, 중간중간 키 검증 로직이 보입니다. 한 번 제대로 분석해서 keygen을 만들어 보겠습니다.
 
 ![KeyVerifier::VerifyKey](/assets/img/Game-Hacking-Pwn-Adventure-3/image%2059.png){: .c-img-resize-60}
 *KeyVerifier::VerifyKey*
@@ -1586,7 +1586,7 @@ if ( v2 >= 0x19 ) // [1]
 세번째 로직입니다.
 
 1. 15바이트 배열인 `opbxSacf` 을 0으로 초기화해줍니다. → 새로운 배열에 쓸 준비
-2. 그 다음  do - while문에서 `omjGcCXV` 24바이트 배열에서 각 바이트의 5bit를 체크하고 만약 각 bit가 1이라면, 15바이트 배열인 `opbxSacf` 에 차례대로 추가합니다. 그리고 나머지 3bit는 버립니다. (각 바이트는 `0123456789ABCDEFHJKLMNPQRTUVWXYZ` 의 최대 인덱스보다 작으므로 최대 31이라서 3bit는 0으로 고정)  
+2. 그 다음  do - while문에서 `omjGcCXV` 24바이트 배열에서 각 바이트의 5bit를 체크하고 만약 각 bit가 1이라면, 15바이트 배열인 `opbxSacf` 에 차례대로 추가합니다. 그리고 나머지 3bit는 버립니다. (각 바이트의 값은 `0123456789ABCDEFHJKLMNPQRTUVWXYZ`의 최대 인덱스보다 작기 때문에 최대 5bit만 사용하고, 상위 3bit는 0으로 고정)  
 예를 들어, `omjGcCXV` 배열의 첫번째 바이트의 5bit + 두번째 바이트의 3bit로 `opbxSacf` 배열의 1번째 바이트가 결정됩니다. 그리고 `opbxSacf` 배열의 2번째 바이트는 `omjGcCXV` 배열의 두번째 바이트의 4-5번째 bit + 세번째 바이트의 5bit + 네번째 바이트의 1bit로 결정됩니다.
     
     ![image.png](/assets/img/Game-Hacking-Pwn-Adventure-3/image%2060.png){: .c-img-resize-80}
@@ -1680,9 +1680,9 @@ while ( opbxSacf[v24] == xQyxXxmo[v24] ) // [9]
 }
 ```
 
-⇒ `opbxSacf`(decode된 15바이트 배열)에서 12바이트(11바이트 + 2bit)를 추출하여 12바이트 데이터를 만듭니다. 또, 마지막 4바이트를 추출하여 특정 연산을 하고, PWNADV3 문자열과 병합하여 12바이트 데이터를 만듭니다.
-`FJoVXLze` = `opbxSacf[:11]` + `opbxSacf[12] & 3`
-`xQyxXxmo` =  `????` + `PWNADV3\x00`
+⇒ `opbxSacf`(decode된 15바이트 배열)에서 12바이트(11바이트 + 2bit)를 추출하여 12바이트 데이터를 만듭니다. 또, 마지막 4바이트를 추출하여 특정 연산을 하고, PWNADV3 문자열과 병합하여 12바이트 데이터를 만듭니다.  
+`FJoVXLze` = `opbxSacf[:11]` + `opbxSacf[12] & 3`  
+`xQyxXxmo` =  `????` + `PWNADV3\x00`  
 
 `SJLnUAhG` 함수의 인자로 0x10001과 12바이트 hex값이 들어가는데 이는 0x10001은 RSA에서 일반적으로 사용되는 공개키 지수입니다. 따라서 `SJLnUAhG` 함수는 RSA로 encrypt 해주는 함수라고 추측할 수 있습니다. (함수 내부로 들어가면 로직이 엄청 복잡해서, 나중에 어셈블리에서 RSA를 사용하는 코드를 분석해볼 계획입니다)
 
