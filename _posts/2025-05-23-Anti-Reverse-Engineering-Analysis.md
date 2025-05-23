@@ -258,9 +258,9 @@ flowchart TB
 
     subgraph "레지스터 역할"
         RSI["RSI: 바이트코드 포인터\n(명령어 스트림 위치)"]
-        RBP["RBP: 가상 스택 포인터\n(연산 스택 관리)"]
+        RSP["RSP: 가상 스택 포인터\n(VM 연산 스택 관리)"]
         R11["R11: 베이스 주소\n(핸들러 테이블 기준점)"]
-        RSP["RSP: 가상 레지스터 기반 주소\n(VM 상태 저장소)"]
+        RBP["RBP: 가상 레지스터 컨텍스트 베이스\n(VM 상태 저장소)"]
         RCX["RCX/R10: 현재 바이트코드\n(핸들러 인덱스)"]
         R8["R8: 계산된 핸들러 주소\n(실행 대상)"]
     end
@@ -279,7 +279,7 @@ flowchart TB
 
 VMProtect는 실제 스택과 별도로 **가상 스택(Virtual Stack)** 을 운영합니다.
 
-- RBP를 기준으로 별도의 공간을 할당하고, 여기에 가상 연산을 위한 값들을 쌓고 사용합니다.
+- RSP를 기준으로 별도의 공간을 할당하고, 여기에 가상 연산을 위한 값들을 쌓고 사용합니다.
 - 일반적인 CALL/RET 개념과 유사하지만, 이를 스스로 시뮬레이션하기 위한 구조입니다.
 - 디버깅 시 이 영역의 접근 여부를 확인하면 가상 명령어 간 데이터 흐름을 추적할 수 있습니다.
 
@@ -287,16 +287,16 @@ VMProtect는 실제 스택과 별도로 **가상 스택(Virtual Stack)** 을 운
 flowchart TB
     subgraph "가상 스택 구조"
         direction TB
-        Stack["가상 스택 (RBP 기반)"] --- VStack
+        Stack["가상 스택 (RSP 기반)"] --- VStack
 
         subgraph VStack
             direction TB
             StackTop["상위 주소 (이전 값들)"]
-            StackRBP["RBP → 현재 스택 최상단"]
-            StackRBP8["RBP+8 (다음 팝 위치)"]
-            StackRBP16["RBP+16..."]
+            StackRSP["RSP → 현재 스택 최상단"]
+            StackRSP8["RSP-8 (다음 푸시 위치)"]
+            StackRSP16["RSP-16..."]
 
-            StackTop --- StackRBP --- StackRBP8 --- StackRBP16
+            StackTop --- StackRSP --- StackRSP8 --- StackRSP16
         end
     end
 ```
@@ -305,21 +305,22 @@ flowchart TB
 
 #### 3. 가상 레지스터 파일
 
-RSP는 일반적인 의미의 스택 포인터가 아닌, **가상 레지스터 파일의 베이스 주소**로 사용됩니다.
+RBP는 가상 레지스터 파일의 베이스 주소로 사용됩니다.
 
-- RSP를 기준으로 특정 오프셋에서 가상 레지스터 값을 읽고 씁니다.
+
+- RBP를 기준으로 특정 오프셋에서 가상 레지스터 값을 읽고 씁니다.
 - 실제 레지스터가 아닌, 가상의 컨텍스트를 운영하기 위한 메모리 기반 구조입니다.
 - 핸들러 내부에서 어떤 값을 읽고 쓰는지를 추적하면 이 가상 레지스터와 연관된 로직을 파악할 수 있습니다.
 
 ```mermaid
 flowchart TB
     subgraph "가상 레지스터 파일"
-        VRegs["가상 레지스터 (RSP+인덱스)"] --- RegFile
+        VRegs["가상 레지스터 (RBP 기반)"] --- RegFile
 
         subgraph RegFile
-            Reg0["RSP+0: 가상 레지스터 0"]
-            Reg1["RSP+8: 가상 레지스터 1"]
-            RegN["RSP+N*8: 가상 레지스터 N"]
+            Reg0["RBP+0: 가상 레지스터 0"]
+            Reg1["RBP+8: 가상 레지스터 1"]
+            RegN["RBP+N*8: 가상 레지스터 N"]
 
             Reg0 --- Reg1 --- RegN
         end
