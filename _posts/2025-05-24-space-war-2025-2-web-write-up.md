@@ -154,7 +154,7 @@ Step 5) 플래그 획득 가능 확인
 이 문제는 PyJWT 라이브러리의 알고리즘 혼동 취약점(CVE-2022-29217)을 악용하여, 서버의 JWT 서명 검증 로직을 우회하고 인증 권한을 탈취하여 플래그를 획득하는 과정을 다룹니다.
 해당 취약점은 PyJWT 1.5.0 ~ 2.3.0 버전에서 발생하며, `jwt.algorithms.get_default_algorithms()` 호출을 통해 대칭 키와 비대칭 키 알고리즘을 모두 지원하게 되면서 발생합니다.
 
-사진 img를 보면 data-token 이 존재합니다다. data-token이 1.user=admin, 2.서명검증 이 두가지를 만족시키면 gallery 속 사진이 flag 로 바뀌게 됩니다.
+사진 img를 보면 data-token 이 존재합니다. data-token이 1.user=admin, 2.서명검증 이 두가지를 만족시키면 gallery 속 사진이 flag 로 바뀌게 됩니다.
 
 data-token을 JWT 디코더로 분석해보면, alg: ES256 (비대칭키, ECDSA) 알고리즘을 사용하는 서명을 확인할 수 있습니다. 해당 JWT는 공개키를 활용한 ES256 기반 서명 구조입니다.
 PyJWT의 취약점(CVE-2022-29217)을 이용하여, JWT의 Header의 alg 값을 HS256으로 변경하고, 동시에 기존 ES256에서 사용되던 공개키를 HS256의 비밀키처럼 사용하도록 유도합니다. 이를 위해 JWT의 jwk 형식 공개키를 OpenSSH 포맷 또는 PEM 포맷 문자열로 추출합니다.
