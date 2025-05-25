@@ -378,7 +378,7 @@ def exploit(p):
 if __name__ == "__main__":
     p = remote(HOST, PORT)
     exploit(p)
-    exit(0)```
+    exit(0)
 ```
 
 #### ez_vm
