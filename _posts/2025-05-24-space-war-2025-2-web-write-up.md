@@ -115,19 +115,19 @@ print(real(realpw))
 - 접근 제한 조건: /flag 엔드포인트는 admin_session_token 쿠키가 존재할 경우에만 응답
 - CORS 정책: hspace.com 도메인만 허용
 
-1. SQL Injection을 통한 관리자 로그인 우회
+Step 1) SQL Injection을 통한 관리자 로그인 우회
 
 ![image.png](/assets/img/2025_spacewar2/image.png)
 
-2. 관리자 로그인 성공 시 세션 값 확인
+Step 2) 관리자 로그인 성공 시 세션 값 확인
 
 ![image.png](/assets/img/2025_spacewar2/image%201.png)
 
-3. CORS 정책을 우회하기 위해 [hspace.com](http://hspace.com) 이 포함된 도메인으로 설정
+Step 3) CORS 정책을 우회하기 위해 [hspace.com](http://hspace.com) 이 포함된 도메인으로 설정
 
 ![image.png](/assets/img/2025_spacewar2/image%202.png)
 
-4. [gyeong0hspace.com](http://gyeong.hspace.com) url을 통해 접속 후 poc 코드 개발자 도구를 통해 실행
+Step 4) [gyeong0hspace.com](http://gyeong.hspace.com) url을 통해 접속 후 poc 코드 개발자 도구를 통해 실행
 
 ```jsx
 fetch("http://gyeong-hspace.com:5000/flag", {
