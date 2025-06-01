@@ -1,7 +1,7 @@
 ---
 title: 2025 Hacktheon CTF writeup
 description: 2025 Hacktheon CTF qual 전체 문제 풀이입니다.
-author: 박기태(kitaep), 박성준(realsung), 박창완(diff), 안건희(ipwn)
+author: 박기태(kitaep), 박성준(realsung), 박창완(diff), 안건희(ipwn), 이서준(zer0tim3r)
 date: 2025-05-30 20:00:00 +0900
 tags: [Tech, CTF]
 categories: [Tech, CTF]
@@ -9,11 +9,11 @@ comments: false
 math: true
 mermaid: false
 pin: false
-image: /assets/img/2025_hacktheon_writeup/hacktheon.jpg
+image: /assets/img/2025_hacktheon_writeup/thumbnail.png
 ---
 # 2025 Hacktheon CTF writeup
 
-### 박기태(kitaep), 박성준(realsung), 박창완(diff), 안건희(ipwn)
+### 박기태(kitaep), 박성준(realsung), 박창완(diff), 안건희(ipwn), 이서준(zer0tim3r)
 
 ## 목차
 1. [tar](#tar) - pwn
@@ -271,7 +271,7 @@ zip파일은 몇 가지의 헤더와 바디로 나눠져있기 때문에, parsin
 
 또한 cde와 lfe 구조체는 둘 다 0x48로 구조체의 크기가 같습니다. 따라서 cde를 prasing하는 도중 의도적으로 실패를 유발하고 lfe를 할당받는다면 같은 공간을 재사용하며 `UAF`가 발생하게 됩니다.
 
-```C
+```c
 #pragma pack(push, 1)
 struct central_directory_entry_hdr
 {
@@ -333,7 +333,7 @@ struct local_file_entry
 
 구조체를 확인해보면, lfe의 filename 멤버 변수부터 uncomp_buf 멤버변수까지, cde의 멤버변수들과 모두 겹치는 것을 확인할 수 있습니다. 
 
-```C
+```c
 char __fastcall list_zip_entries(zip_structure *a1)
 {
   raw_end_of_central_directory *eocr; // rax
@@ -391,7 +391,7 @@ LABEL_10:
 
 두 번째 취약점은 zip 파일을 extract하는 과정에서 발생합니다.
 
-```C
+```c
 char __fastcall extract_zip_entries(zip_structure *a1)
 {
   char result; // al
@@ -993,7 +993,7 @@ unsigned __int64 __fastcall custom_free(head_node *a1)
 
 또한, 할당 및 해제 방식을 보면, size에 맞는 index의 bitmap을 순회하여 해제하고 할당하는 것을 확인할 수 있습니다. 따라서, bitmap의 주소를 조작하면 다른 특정 size의 힙 layout에 대하여 **할당/해제 여부를 조작할 수 있습니다.**
 
-```C
+```c
 __int64 __fastcall save_data(raw_data *a1, data *a2)
 {
   int v2; // ecx
@@ -1356,7 +1356,7 @@ flag: upsolved after the end of CTF
 
 `src/WETH.sol` 파일을 확인하면 다음과 같은 코드를 볼 수 있습니다:
 
-```solidity
+```js
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.20;
 import {Script} from "forge-std/Script.sol";
