@@ -1,7 +1,7 @@
 ---
 title: 2025 Hacktheon CTF writeup
 description: 2025 Hacktheon CTF qual 전체 문제 풀이입니다.
-author: 박기태(kitaep), 박성준(realsung), 박창완(diff), 안건희(ipwn), 이서준(zer0tim3r)
+author: 박기태(kitaep), 박성준(realsung), 박창완(diff), 안건희(ipwn)
 date: 2025-05-30 20:00:00 +0900
 tags: [Tech, CTF]
 categories: [Tech, CTF]
@@ -9,11 +9,11 @@ comments: false
 math: true
 mermaid: false
 pin: false
-image: /assets/img/2025_hacktheon_writeup/thumbnail.png
+image: /assets/img/2025_hacktheon_writeup/hacktheon.jpg
 ---
 # 2025 Hacktheon CTF writeup
 
-### 박기태(kitaep), 박성준(realsung), 박창완(diff), 안건희(ipwn), 이서준(zer0tim3r)
+### 박기태(kitaep), 박성준(realsung), 박창완(diff), 안건희(ipwn)
 
 ## 목차
 1. [tar](#tar) - pwn
