@@ -3031,17 +3031,11 @@ flag: `FLAG{2025/03/14_17:40}`
 
 #### Password
 
-Author: zer0tim3r@gmail.com
-
-##### Summary
-
 Windows Credentials를 분석하는 포렌식 문제입니다. 
 
 메신저로 주고받은 대화를 분석해서 단서를 얻을 수 있습니다.
 
 암호가 걸려있는 FILE.zip 파일의 암호를 찾아 압축 해제하면 플래그를 얻을 수 있습니다.
-
-##### Details
 
 문제에서 주어지는 Password.ad1 파일을 FTK Imager로 열면 최상위 루트 파일 시스템에서 Users 폴더와 Windows 폴더를 확인할 수 있습니다.
 
