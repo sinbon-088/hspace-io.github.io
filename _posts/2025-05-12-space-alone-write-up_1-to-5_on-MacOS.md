@@ -13,28 +13,38 @@ image:
 ---
 ### 김도헌(S7nT3E)
 
-## 목차
+### 목차
 ---
-1. MacOS 환경 구축
+1. 서론
+2. MacOS 환경 구축
   - 1) .ova -> .qcow2 파일 변환
   - 2) UTM 설정
   - 3) SSH 설정
-2. Write-up (1~5)
+3. Write-up (1~5)
   - Chapter1
   - Chapter2
   - Chapter3
   - Chapter4
   - Chapter5
-3. 마무리
+4. 마무리
+
+### 서론
+---
+안녕하세요. Knights of the SPACE의 멤버로 활동하고 있는 김도헌(S7nT3E)입니다.<br>
+이번 글에서는 HSPACE에서 배포해주셨던 [Space Alone](https://github.com/hspace-io/HSPACE-LOB)에 대해서,<br> 
+MacOS에서의 환경 구축 방법과 Chapter 1~5까지의 Write-up을 작성해봤습니다.<br><br>
+5챕터까지는 비교적 쉬운 난이도로 구성되어있는만큼, <br>
+기법을 처음 공부하시거나 아직 익숙하지 않은 분들께서 공부하시기에 상당히 좋은 문제들이라고 생각합니다.<br><br>
+어려우신 분들은 이번 글을 보시며 함께 따라서 공부해보셔도 좋을 것 같습니다.
 
 ### MacOS 환경 구축
 ---
 본 블로그를 작성한 블로거(S7nT3E)는 MAC 환경 (Silicon MAC, M4)에서 문제 풀이를 진행했습니다.
 
-하지만 주어진 파일은 .ova 파일인데, 이는 윈도우 기준으로 사용할 수 있는 파일입니다.<br>
+하지만 Space Alone에서 주어진 파일은 .ova 파일인데, 이는 윈도우 기준으로 사용할 수 있는 파일입니다.<br>
 (MAC에서 Virtual Box를 설치하고 파일을 통해 가상머신을 열어도 부팅에서 터지게됩니다)
 
-이에 따라 Github나 영상 자료를 참고하여 x86_64 기준의 .ova파일을 .qcow2 파일로 변환하고,<br>
+이에 따라 해외의 Github나 영상 자료를 참고하여 x86_64 기준의 .ova파일을 .qcow2 파일로 변환하고,<br>
 이것을 UTM을 통해 실행시키는데에 성공하여 이 과정에 대한 내용도 함께 담고자 합니다.
 
 #### 1. .ova → .qcow2 파일 변환
@@ -81,7 +91,7 @@ image:
 - 부팅 장치 없음 선택 → 계속
 <img src="/assets/img/SpaceAloneMacOS/11.png" alt="가상머신 생성" width="50%">
 
-이후 하드웨어, 저장소, 공유 디렉터리는 모두 기본 설정으로 넘기셔도 되고 편하신 대로 설정하셔도 괜찮습니다.<br>
+이후 하드웨어, 저장소, 공유 디렉터리는 모두 기본 설정으로 넘기셔도 되고 편하신 대로 설정하셔도 괜찮습니다.<br><br>
 다만, .ova 파일이 요구하는 사양에 따라 메모리 용량이나 드라이브 크기를 너무 작게 설정하신다면 <br>
 이 역시 부팅 과정에서 터질 수 있기때문에 주의해주셔야 합니다.
 
@@ -92,16 +102,16 @@ image:
 이후 가상 머신을 실행하기 전 설정을 추가로 해야합니다.
 
 - 추가 설정
-<img src="/assets/img/SpaceAloneMacOS/13.png" alt="추가 설정" width="50%">
+<img src="/assets/img/SpaceAloneMacOS/13.png" alt="추가 설정" width="50%"><br>
 
 - 설정 → QEMU → 트윅 → UEFI 부팅 체크 해제
-<img src="/assets/img/SpaceAloneMacOS/14.png" alt="부팅 설정" width="50%">
+<img src="/assets/img/SpaceAloneMacOS/14.png" alt="부팅 설정" width="50%"><br>
 
 - 드라이브 → IDE 드라이브 ( 기존에 있던 것 ) → 제거
-<img src="/assets/img/SpaceAloneMacOS/15.png" alt="IDE 드라이브 제거" width="50%">
+<img src="/assets/img/SpaceAloneMacOS/15.png" alt="IDE 드라이브 제거" width="50%"><br>
 
 - 드라이브 → 새로 만들기 → 가져오기 ( 아까 1에서 변환한 .qcow2 파일을 선택 )
-<img src="/assets/img/SpaceAloneMacOS/16.png" alt="qcow2 적용" width="50%">
+<img src="/assets/img/SpaceAloneMacOS/16.png" alt="qcow2 적용" width="50%"><br>
 
 그리고 저장을 누르시면 설정이 끝납니다.<br>
 그냥 가상머신 자체가 필요한 것이라면 여기서 끝나도 상관없지만, <br>
