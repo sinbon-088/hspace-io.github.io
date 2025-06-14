@@ -1,10 +1,10 @@
 ---
-title: SpaceAlone WriteUP(Chapter 6~10)
+title: SpaceAlone Writeup Chapter 6~10
 description: SpaceAlone Chapter 6~10 문제를 풀어봅시다.
 author: 조수호(shielder)
-date: 2025-05-25 12:00:00 +0900
-tags: [Tech, Pwnable]
-categories: [Tech, Pwnable]
+date: 2025-06-15 12:00:00 +0900
+tags: [SpaceAlone, Pwnable]
+categories: [CTF Write-up, Pwnable]
 comments: false
 math: true
 mermaid: false
