@@ -1,7 +1,7 @@
 ---
 title: 모바일해킹 입문자를 위한 Frida 사용법 with FridaLab
 description: 모바일해킹 입문자를 위한 Frida 튜토리얼 입니다.
-author: jiw0n
+author: 강지원(jiw0n)
 date: 2025-04-16 02:17:33 +0900
 tags: [Frida, Mobile]
 categories: [Frida, Mobile]
@@ -11,8 +11,6 @@ mermaid: false
 pin: false
 image: /assets/img/frida_tutorial/frida_thumbnail.png
 ---
-
-### 강지원(jiw0n)
 
 ## 목차
 1. Frida의 개요

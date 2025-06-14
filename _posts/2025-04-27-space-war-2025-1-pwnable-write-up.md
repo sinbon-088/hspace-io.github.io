@@ -1,7 +1,7 @@
 ---
 title: 2025 SpaceWar#1 (Pwnable) 풀이
 description: HSPACE에서 출제한 2025 SpaceWar 포너블 문제 풀이입니다.
-author: hspace
+author: realsung
 date: 2025-04-27 19:00:00 +0900
 tags: [Tech, CTF]
 categories: [Tech, CTF]
@@ -13,11 +13,12 @@ image: /assets/img/2025_spacewar1/thumbnail.jpg
 ---
 
 ## 목차
-- [bxorf](#bxorf)
-- [p-shell](#p-shell)
-- [tinyerror](#tinyerror)
-- [ez\_vm](#ez_vm)
-- [perfect machine](#perfect-machine)
+- [목차](#목차)
+    - [bxorf](#bxorf)
+    - [p-shell](#p-shell)
+    - [tinyerror](#tinyerror)
+    - [ez\_vm](#ez_vm)
+    - [perfect machine](#perfect-machine)
 
 #### bxorf
 

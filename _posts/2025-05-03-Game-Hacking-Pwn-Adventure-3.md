@@ -57,10 +57,7 @@ image: /assets/img/Game-Hacking-Pwn-Adventure-3/thumbnail.png
   }
 </style>
 
-### 오성훈(5un9hun)
-
 ## 목차
----
 1. 서론
 2. 게임 배경 지식
   - 온라인/오프라인 관점에서 바라본 해킹

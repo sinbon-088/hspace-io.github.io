@@ -24,9 +24,6 @@ image: /assets/img/spacewar/space_war_2.png
 9. HSpace Hub
 10. InSecureCPP
 
-
-## Space War 2024#2 (Pwnable) write-up
-
 안녕하세요, Space War 2024#2 Pwnable CTF 파트를 담당한 황선우(snwo)입니다. 
 2024년의 두 번째 카테고리별 CTF 으로 포너블(Pwnable) 분야가 진행되었습니다. 
 문제를 분석하고 exploit 작성 후 디버깅 지옥에 빠져 시간을 많이 써야하는 포너블 분야 특성상 다른 분야 ctf에 비해 0솔 문제가 많았던 카테고리별 CTF 였습니다.

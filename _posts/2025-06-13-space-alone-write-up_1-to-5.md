@@ -11,7 +11,6 @@ mermaid: false
 pin: false
 image:
 ---
-### 김도헌(S7nT3E)
 
 ### 목차
 ---

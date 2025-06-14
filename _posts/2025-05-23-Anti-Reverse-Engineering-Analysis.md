@@ -12,10 +12,6 @@ pin: false
 image: /assets/img/Anti_Reverse_Engineering_Analysis/thumbnail.png
 ---
 
-### 조해성(GDOCCHI)
-
----
-
 ## 목차
 
 ---

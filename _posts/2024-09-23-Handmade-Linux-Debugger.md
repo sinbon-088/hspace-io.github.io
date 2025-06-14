@@ -21,7 +21,7 @@ image: /assets/img/Handmade-Linux-Debugger/handmade_linux_debugger_thumbnali.png
 5. 글을 마치며
 6. 참고자료
 
-## 직접 만들어보는 리눅스 디버거 (without ptrace)
+---
 
 안녕하세요! knights of the space의 멤버로 활동하고 있는 김영민(OSORI)입니다. 
 

@@ -2,6 +2,7 @@
 title: 2024 Hacktheon 예선전 풀이
 description: 2024 핵테온 세종 사이버보안 경진대회 예선 풀이입니다.
 date: 2024-07-01 02:17:33 +0900
+author: hacktheon2024
 tags: [Tech,CTF]
 categories: [Tech, CTF]
 comments: false

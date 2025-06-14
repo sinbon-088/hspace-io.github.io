@@ -1,7 +1,7 @@
 ---
 title: 2025 SpaceWar#2 (Web) 풀이
 description: HSPACE에서 출제한 2025 SpaceWar 웹 문제 풀이입니다.
-author: hspace
+author: realsung
 date: 2025-05-24 19:00:00 +0900
 tags: [Tech, CTF]
 categories: [Tech, CTF]

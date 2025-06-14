@@ -2,6 +2,7 @@
 title: 2024 파트너스리그 예선전 풀이
 description: 2024 파트너스리그 예선전 풀이입니다.
 date: 2024-12-16 02:17:33 +0900
+author: ipwn
 tags: [Tech,CTF]
 categories: [Tech, CTF]
 comments: false

@@ -12,8 +12,6 @@ pin: false
 image: 
 ---
 
-### 조수호(shielder)
-
 ## 목차
 
 1. Write-up (6-10)

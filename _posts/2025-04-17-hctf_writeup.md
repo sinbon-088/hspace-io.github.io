@@ -1,7 +1,7 @@
 ---
 title: 2024 HCTF writeup
 description: HSPACE에서 출제한 2024 HCTF 전체 문제 풀이입니다.
-author: 안건희(ipwn)
+author: ipwn
 date: 2025-04-17 20:00:00 +0900
 tags: [Tech, CTF]
 categories: [Tech, CTF]
@@ -11,9 +11,6 @@ mermaid: false
 pin: false
 image: /assets/img/2024_hctf_writeup/hctf.jpg
 ---
-# 2024 HCTF writeup
-
-### ipwn(안건희)
 
 ## 목차
 1. [h-babynote](#h-babynote) - pwn

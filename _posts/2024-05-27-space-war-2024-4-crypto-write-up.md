@@ -25,8 +25,6 @@ image: /assets/img/spacewar/space_war_4.png
 10. Another RSA Permutation
 
 
-## Space War 2024#4 (Crypto) write-up
-
 안녕하세요, Space War 2024#4 Crypto CTF 파트를 담당한 김민순(soon_haari)입니다.
 2024년의 4번째 카테고리별 CTF, 혹은 2월의 두 번째 카테고리별 CTF로 암호학(Cryptography) 분야가 진행되었습니다.
 다양한 난이도를 가지되, 쉬운 문제들도 교육적 가치를 가지기 위해서 동료들의 도움과 함께 열심히 제작하였고, 열심히 풀어주신 모든 분들께 깊은 감사를 드립니다.

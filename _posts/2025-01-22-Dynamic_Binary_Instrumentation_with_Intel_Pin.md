@@ -12,10 +12,6 @@ pin: false
 image: /assets/img/DBI/dbi_thumbnail.jpg
 ---
 
-### 김영민(OSORI)
-
----
-
 ## 목차
 
 1. Dynamic Binary Instrumentation with Intel Pin
