@@ -2,7 +2,7 @@
 title: SpaceAlone Writeup Chapter 6~10
 description: SpaceAlone Chapter 6~10 문제를 풀어봅시다.
 author: 조수호(shielder)
-date: 2025-06-15 12:00:00 +0900
+date: 2025-06-14 12:00:00 +0900
 tags: [SpaceAlone, Pwnable]
 categories: [CTF Write-up, Pwnable]
 comments: false
@@ -25,7 +25,10 @@ image:
 2. 피드백
 3. 마무리
 
-안녕하세요, Knights of the SPACE에서 활동중인 조수호(shielder)입니다. 본 글에서는 앞선 글에 이어 [Space Alone](https://github.com/hspace-io/HSPACE-LOB) Chapter6 ~ Chapter10를 풀어보겠습니다.
+안녕하세요, Knights of the SPACE에서 활동중인 조수호(shielder)입니다. 본 글에서는 [Space Alone](https://github.com/hspace-io/HSPACE-LOB) Chapter6~10를 풀어보겠습니다.
+
+Chapter 1~5 풀이는 다음 링크를 참고해주세요.
+- [SpaceAlone Writeup Chapter 1-5](https://blog.hspace.io/posts/space-alone-write-up_1-to-5/)
 
 ---
 ## Write-up
@@ -281,8 +284,9 @@ int main(int argc, char *argv[]){
 
 - 익스플로잇 설계
 
-카나리가 있기 때문에, 이를 알아내야 하는데 릭 벡터를 일차원적으로 찾을 수는 없습니다. 따라서 카나리를 변조해야만 다음 단계로 넘어갈 수 있습니다. 그런데 스택 프레임 내부의 카나리 값이 기존 카나리 값과 달라지면 `__stack_chk_fail` 함수를 호출합니다. 따라서 이 함수의 `got` 영역을 변조하고 의도적으로 호출하도록 설계합니다. `bof` 크기가 크기 때문에 `got overwrite`에서 체이닝을 고려할 필요는 없고 `ret` 주소로만 변조해도 충분합니다. 이러면 그냥 다음 어셈블리어 코드가 실행되므로 카나리 체크는 없는 것과 마찬가지입니다. `pop rdi ; ret` 가젯이 있기 때문에 `bof`를 이용하여 `puts`를 호출하여 `libc_base`를 얻고 `ROP`를 수행하여 `system('/bin/sh')`를 호출합니다.
-이 때 `sfp`의 값을 신경써주어야 합니다. `startup` 함수를 두 번 실행하기 때문에 두 번째 함수의 `leave ; ret`에 의해 첫 번째 `payload`의 `sfp` 값이 `rsp`가 됩니다. `system` 함수는 작동 중에 쓰기 과정이 있으므로 `rsp`의 근처의 주소가 쓰기 가능한 영역이어야 합니다. 즉 `sfp`를 바른 주소로 적어주어야 합니다. `rsp`가 음수 쪽으로 쓰기 불가능한 주소와 가까이 있다면 `system` 함수가 제대로 작동하지 않을 가능성이 있으므로 보통 `e.bss() + 0x800 or 0x900`를 많이 사용합니다. 아래 코드가 이해를 도울 것입니다.
+카나리가 있기 때문에, 이를 알아내야 하는데 릭 벡터를 일차원적으로 찾을 수는 없습니다. 따라서 카나리를 변조해야만 다음 단계로 넘어갈 수 있습니다. 그런데 스택 프레임 내부의 카나리 값이 기존 카나리 값과 달라지면 `__stack_chk_fail` 함수를 호출합니다. 따라서 이 함수의 `got` 영역을 변조하고 의도적으로 호출하도록 설계합니다. `bof` 크기가 크기 때문에 `got overwrite`에서 체이닝을 고려할 필요는 없고 `ret` 주소로만 변조해도 충분합니다. 이러면 그냥 다음 어셈블리어 코드가 실행되므로 카나리 체크는 없는 것과 마찬가지입니다.
+
+`pop rdi ; ret` 가젯이 있기 때문에 `bof`를 이용하여 `puts`를 호출하여 `libc_base`를 얻고 `ROP`를 수행하여 `system('/bin/sh')`를 호출합니다. 이 때 `sfp`의 값을 신경써주어야 합니다. `startup` 함수를 두 번 실행하기 때문에 두 번째 함수의 `leave ; ret`에 의해 첫 번째 `payload`의 `sfp` 값이 `rsp`가 됩니다. `system` 함수는 작동 중에 쓰기 과정이 있으므로 `rsp`의 근처의 주소가 쓰기 가능한 영역이어야 합니다. 즉 `sfp`를 바른 주소로 적어주어야 합니다. `rsp`가 음수 쪽으로 쓰기 불가능한 주소와 가까이 있다면 `system` 함수가 제대로 작동하지 않을 가능성이 있으므로 보통 `e.bss() + 0x800 or 0x900`를 많이 사용합니다. 아래 코드가 이해를 도울 것입니다.
 
 - 익스플로잇
 
