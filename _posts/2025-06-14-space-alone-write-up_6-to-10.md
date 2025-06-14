@@ -625,7 +625,7 @@ The_Cure_Within_Reach@hsapce-io:~$ checksec /lib/x86_64-linux-gnu/libc.so.6
 
 - 코드 분석
 
-```C
+```c
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
