@@ -9,7 +9,7 @@ comments: false
 math: true
 mermaid: false
 pin: false
-image: 
+image: /assets/img/SpaceAloneMacOS/SpaceAlone6-10.png
 ---
 
 ## 목차
@@ -24,6 +24,9 @@ image:
 3. 마무리
 
 안녕하세요, Knights of the SPACE에서 활동중인 조수호(shielder)입니다. 본 글에서는 [Space Alone](https://github.com/hspace-io/HSPACE-LOB) Chapter6~10를 풀어보겠습니다.
+
+Space Alone 포스터입니다.
+<img src="/assets/img/SpaceAloneMacOS/post.jpg" alt="포스터" width="70%" style="display: block; margin: 0 auto;">
 
 Chapter 1~5 풀이는 다음 링크를 참고해주세요.
 - [SpaceAlone Writeup Chapter 1-5](https://blog.hspace.io/posts/space-alone-write-up_1-to-5/)

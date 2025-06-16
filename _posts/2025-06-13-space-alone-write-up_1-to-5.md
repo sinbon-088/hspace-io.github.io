@@ -9,7 +9,7 @@ comments: false
 math: true
 mermaid: false
 pin: false
-image:
+image: /assets/img/SpaceAloneMacOS/SpaceAlone1-5.png
 ---
 
 ### 목차
@@ -30,10 +30,14 @@ image:
 ### 서론
 ---
 안녕하세요. Knights of the SPACE의 멤버로 활동하고 있는 김도헌(S7nT3E)입니다.<br>
-이번 글에서는 HSPACE에서 배포해주셨던 [Space Alone](https://github.com/hspace-io/HSPACE-LOB)에 대해서, MacOS에서의 환경 구축 방법과 Chapter 1~5까지의 Write-up을 작성해봤습니다.<br>
-5챕터까지는 비교적 쉬운 난이도로 구성되어있는만큼, 시스템해킹 기법을 처음 공부하시거나 아직 익숙하지 않은 분들께서 공부하시기에 상당히 좋은 문제들이라고 생각합니다.<br>
+이번 글에서는 HSPACE에서 배포해주셨던 [Space Alone](https://github.com/hspace-io/HSPACE-LOB)에 대해서, MacOS에서의 환경 구축 방법과 Chapter 1~5까지의 Write-up을 작성해봤습니다. 5챕터까지는 비교적 쉬운 난이도로 구성되어있는만큼, 시스템해킹 기법을 처음 공부하시거나 아직 익숙하지 않은 분들께서 공부하시기에 상당히 좋은 문제들이라고 생각합니다.<br>
 어려우신 분들은 이번 글을 보시며 함께 따라서 공부해보셔도 좋을 것 같습니다.
 챕터 6-10까지의 풀이가 궁금하신분은 다음 링크를 참고해주세요.
+
+Space Alone 포스터입니다.
+<img src="/assets/img/SpaceAloneMacOS/post.jpg" alt="포스터" width="70%" style="display: block; margin: 0 auto;">
+
+
 - [SpaceAlone Writeup Chapter 6-10](https://blog.hspace.io/posts/space-alone-write-up_6-to-10/)
 
 ### MacOS 환경 구축
