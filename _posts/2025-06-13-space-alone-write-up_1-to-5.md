@@ -842,7 +842,7 @@ int main(void)
 
 그리고 shell 함수 부분을 보면 `system("/bin/sh")` 코드가 있음을 확인할 수 있어서, 리턴 주소를 shell 함수로 바꾸면 exploit이 가능하겠다는 생각을 할 수 있습니다.
 
-그래서 페이로드 흐름은 Open_Door 함수 실행 → BOF를 통해 Return Address Overwrite → shell 실행 으로 잡고 페이로드를 작성했습니다.
+그래서 페이로드 흐름은 Open_Door 함수 실행 → BOF를 통해 Return Address Overwrite → shell 함수 실행 으로 잡고 페이로드를 작성했습니다.
 
 - Payload
 
@@ -870,7 +870,7 @@ p.interactive()
 이후 쉘을 따고 status 명령어를 통해 chapter4의 비밀번호를 확인할 수 있었습니다. 
 <img src="/assets/img/SpaceAloneMacOS/32.png" alt="chapter3_ex" width="70%" style="display: block; margin: 0 auto;">
 
-쉘코드를 연습할 수 있는 문제였습니다.
+BOF를 연습할 수 있는 문제였습니다.
 
 #### Chapter 4
 ---
@@ -1219,7 +1219,7 @@ int main() {
 ```
 코드는 상당히 긴 모습입니다. 하지만 저희가 중요하게 볼 부분은 IPS 함수입니다.
 
-main 함수가 실행되면 해당 코드에 의해서 IPS 함수가 실행되는데, IPS 함수는 BOF 취약점이 존재합니다.
+main 함수가 실행되면 아래 do while 코드에 의해서 IPS 함수가 실행되는데, IPS 함수는 BOF 취약점이 존재합니다.
 ```c
     do{
 
