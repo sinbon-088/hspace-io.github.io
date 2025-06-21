@@ -69,7 +69,7 @@ __int64 __fastcall input_check(int a1, unsigned int a2, const char *a3)
   if ( a1 != a2 || strcmp(a3, "hello") )
     return 0LL;
   encode_serial(a2, v7);
-  snprintf(s, 0x80uLL, "hspace{%s", v7);
+  snprintf(s, 0x80uLL, "hspace{", v7);
   for ( i = a3; *i; ++i )
   {
     snprintf(src, 4uLL, "%hhu", *(unsigned __int8 *)i);
