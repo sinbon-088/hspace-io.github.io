@@ -82,7 +82,7 @@ __int64 __fastcall input_check(int a1, unsigned int a2, const char *a3)
 ```
 
 check_flag를 호출하지 않아도 encode_serial 함수로 시리얼 값을 인코딩해 플래그를 얻을 수 있습니다. input_check 함수를 보면 플래그 형식은 다음과 같습니다.
-- hspace{<인코딩된 시리얼><이름의 각 문자 ASCII 값>}
+- hspace{인코딩된 시리얼,이름의 각 문자 ASCII 값}
 시리얼이 532일 때의 예시는 다음과 같습니다.
 
 1. a1 = 532, v16 = strlen(s) = 3
