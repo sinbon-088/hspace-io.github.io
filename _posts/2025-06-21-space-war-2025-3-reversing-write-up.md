@@ -56,7 +56,7 @@ int __cdecl main(int argc, const char **argv, const char **envp)
 함께 주어진 check_flag.exe 파일에 올바른 값을 넣으면 flag가 바로 출력됩니다.
 
 
-```c++
+```cpp
 __int64 __fastcall input_check(int a1, unsigned int a2, const char *a3)
 {
   const char *i; // [rsp+10h] [rbp-C0h]
