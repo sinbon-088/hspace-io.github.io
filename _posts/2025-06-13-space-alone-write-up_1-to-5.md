@@ -1518,7 +1518,8 @@ pwndbg> x/50i 0x401100
 이렇게 확인해보니 plt 영역이라는 이라는 점을 확인할 수 있었습니다. system 함수가 있는 0x401150이 call되는 부분이 있는지 확인해봤습니다.
 <img src="/assets/img/SpaceAloneMacOS/30.png" alt="system call" width="100%" style="display: block; margin: 0 auto;">
 
-IPS + 411 부분에서 call 되는 모습을 확인할 수 있었고, 인자 값으로 전달되는 값을 확인해보기 위해 0x402576을 확인해보니, “/bin/sh”가 인자로 전달되는 모습을 확인할 수 있었습니다. 
+IPS + 411 부분에서 call 되는 모습을 확인할 수 있었고, 인자 값으로 전달되는 값을 확인해보기 위해 0x402576을 확인해보니, "/bin/sh"가 인자로 전달되는 모습을 확인할 수 있었습니다. 
+
 <img src="/assets/img/SpaceAloneMacOS/31.png" alt="binsh 확인" width="100%" style="display: block; margin: 0 auto;">
 
 이제 exploit에 필요한 모든 정보를 얻었으니 페이로드를 작성해보겠습니다.
