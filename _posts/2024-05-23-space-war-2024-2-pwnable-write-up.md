@@ -5,7 +5,6 @@ author: snwo
 date: 2024-05-23 02:17:33 +0900
 tags: [Spacewar, Pwnable]
 categories: [SpaceWar, Pwnable]
-comments: false
 math: true
 mermaid: false
 pin: false
