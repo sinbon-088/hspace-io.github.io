@@ -5,7 +5,6 @@ author: 조수호(shielder)
 date: 2025-02-19 20:00:00 +0900
 tags: [Tech, CTF, pwn]
 categories: [Tech, CTF, pwn]
-comments: false
 math: true
 mermaid: false
 pin: false

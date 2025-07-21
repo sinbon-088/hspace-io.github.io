@@ -5,7 +5,6 @@ author: soon_haari
 date: 2024-05-27 02:17:33 +0900
 tags: [Spacewar, Crypto]
 categories: [SpaceWar, Crypto]
-comments: false
 math: true
 mermaid: false
 pin: false

@@ -5,7 +5,6 @@ date: 2024-07-01 02:17:33 +0900
 author: hacktheon2024
 tags: [Tech,CTF]
 categories: [Tech, CTF]
-comments: false
 math: true
 mermaid: false
 pin: false

@@ -5,7 +5,6 @@ author: 이인강(Arkea)
 date: 2024-04-09 02:17:34 +0900
 tags: [Reversing, Ghidra, Tutorial, Tech]
 categories: [Reversing, Ghidra, Tutorial, Tech]
-comments: false
 math: true
 pin: false
 image: /assets/img/Ghidra-tutorial-for-reversing-beginners/ghidra_tutorial.png

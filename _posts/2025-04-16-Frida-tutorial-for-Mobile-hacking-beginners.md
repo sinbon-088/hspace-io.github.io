@@ -5,7 +5,6 @@ author: 강지원(jiw0n)
 date: 2025-04-16 02:17:33 +0900
 tags: [Frida, Mobile]
 categories: [Frida, Mobile]
-comments: false
 math: true
 mermaid: false
 pin: false

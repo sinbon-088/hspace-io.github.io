@@ -5,7 +5,6 @@ author: 김영민(OSORI)
 date: 2024-05-29 02:17:33 +0900
 tags: [Tech, Pwnable]
 categories: [Tech, Pwnable]
-comments: false
 math: true
 mermaid: false
 pin: false

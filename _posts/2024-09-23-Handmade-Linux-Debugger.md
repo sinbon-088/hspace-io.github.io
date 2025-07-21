@@ -5,7 +5,6 @@ author: 김영민(OSORI)
 date: 2024-09-23 01:23:33 +0900
 tags: [Tech, Reversing]
 categories: [Tech, Reversing]
-comments: false
 math: true
 mermaid: false
 pin: false

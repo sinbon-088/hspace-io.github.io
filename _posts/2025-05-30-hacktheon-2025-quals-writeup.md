@@ -5,7 +5,6 @@ author: hacktheon2025
 date: 2025-05-30 20:00:00 +0900
 tags: [Tech, CTF]
 categories: [Tech, CTF]
-comments: false
 math: true
 mermaid: false
 pin: false

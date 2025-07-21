@@ -5,7 +5,6 @@ author: ipwn
 date: 2025-04-17 20:00:00 +0900
 tags: [Tech, CTF]
 categories: [Tech, CTF]
-comments: false
 math: true
 mermaid: false
 pin: false

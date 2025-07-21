@@ -5,7 +5,6 @@ author: 오성훈(5un9hun)
 date: 2025-05-03 22:00:00 +0900
 tags: [Tech, Reversing, Game]
 categories: [Tech, Reversing, Game]
-comments: false
 math: true
 mermaid: false
 pin: false

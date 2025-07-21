@@ -5,7 +5,6 @@ author: 김수진(Sujini)
 date: 2024-09-25 02:17:33 +0900
 tags: [Tech, Crypto, Tutorial]
 categories: [Tech, Crypto, Tutorial]
-comments: false
 math: true
 mermaid: false
 pin: false

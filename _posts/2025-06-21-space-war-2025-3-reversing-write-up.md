@@ -5,7 +5,6 @@ author: realsung
 date: 2025-06-21 19:00:00 +0900
 tags: [Tech, CTF]
 categories: [Tech, CTF, Reversing]
-comments: false
 math: true
 mermaid: false
 pin: false

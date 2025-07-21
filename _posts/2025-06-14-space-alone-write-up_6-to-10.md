@@ -5,7 +5,6 @@ author: 조수호(shielder)
 date: 2025-06-14 12:00:00 +0900
 tags: [SpaceAlone, Pwnable]
 categories: [CTF Write-up, Pwnable]
-comments: false
 math: true
 mermaid: false
 pin: false

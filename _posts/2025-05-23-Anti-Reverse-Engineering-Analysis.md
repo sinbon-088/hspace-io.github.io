@@ -5,7 +5,6 @@ author: 조해성(GDOCCHI)
 date: 2025-05-23 13:00:00 +0900
 tags: [Tech, Reversing]
 categories: [Tech, Reversing]
-comments: false
 math: true
 mermaid: true
 pin: false
